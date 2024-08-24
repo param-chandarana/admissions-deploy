@@ -1,6 +1,6 @@
-import { LastId } from "../models/lastId.model.js";
+// import { LastId } from "../models/lastId.model.js";
 
-// const LastId = require("../models/lastId.model");
+const LastId = require("../models/lastId.model");
 
 // Get last ID
 const getLastId = async (req, res) => {
@@ -31,7 +31,7 @@ const updateLastId = async (req, res) => {
 };
 
 
-export {
+module.exports = {
   getLastId,
   updateLastId,
 };

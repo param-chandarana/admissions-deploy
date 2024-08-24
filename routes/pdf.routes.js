@@ -1,10 +1,10 @@
-import express from "express";
-import { generateOfferLetter } from "../controllers/pdf.controller.js";
-import { protect } from "../middleware/authMiddleware.js";
+// import express from "express";
+// import { generateOfferLetter } from "../controllers/pdf.controller.js";
+// import { protect } from "../middleware/authMiddleware.js";
 
-// const express = require("express");
-// const { generateOfferLetter } = require("../controllers/pdf.controller");
-// const { protect } = require("../middleware/authMiddleware");
+const express = require("express");
+const { generateOfferLetter } = require("../controllers/pdf.controller");
+const { protect } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
@@ -12,6 +12,6 @@ router.use(protect);
 
 router.post("/generate", generateOfferLetter);
 
-export default router;
+// export default router;
 
-// module.exports = router;
+module.exports = router;

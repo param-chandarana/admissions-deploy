@@ -1,8 +1,8 @@
-import fs from "fs";
-import puppeteer from "puppeteer";
+// import fs from "fs";
+// import puppeteer from "puppeteer";
 
-// const fs = require("fs");
-// const puppeteer = require("puppeteer");
+const fs = require("fs");
+const puppeteer = require("puppeteer");
 
 // Function to get the ordinal suffix for the day
 const getOrdinalSuffix = (day) => {
@@ -106,4 +106,4 @@ const generateOfferLetter = async (req, res, next) => {
   }
 };
 
-export { generateOfferLetter };
+module.exports = { generateOfferLetter };

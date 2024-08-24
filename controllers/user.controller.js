@@ -1,10 +1,10 @@
-import asyncHandler from "express-async-handler";
-import User from "../models/user.model.js";
-import generateToken from "../utils/generateToken.js";
+// import asyncHandler from "express-async-handler";
+// import User from "../models/user.model.js";
+// import generateToken from "../utils/generateToken.js";
 
-// const asyncHandler = require("express-async-handler");
-// const User = require("../models/user.model");
-// const generateToken = require("../utils/generateToken");
+const asyncHandler = require("express-async-handler");
+const User = require("../models/user.model");
+const generateToken = require("../utils/generateToken");
 
 // @desc    Auth user & get token
 // @route   POST /api/users/auth
@@ -118,7 +118,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
   }
 });
 
-export {
+module.exports = {
   authUser,
   registerUser,
   logoutUser,

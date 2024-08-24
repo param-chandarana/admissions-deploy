@@ -1,8 +1,8 @@
-import { Student } from "../models/student.model.js";
-import * as XLXS from "xlsx";
+// import { Student } from "../models/student.model.js";
+// import * as XLXS from "xlsx";
 
-// const Student = require("../models/student.model");
-// const XLXS = require("xlsx");
+const Student = require("../models/student.model");
+const XLXS = require("xlsx");
 
 // Get all students
 const getAllStudents = async (req, res) => {
@@ -205,7 +205,7 @@ const downloadExcel = async (req, res) => {
   }
 };
 
-export {
+module.exports = {
   getAllStudents,
   getPaginatedStudents,
   getStudentById,

@@ -1,6 +1,6 @@
-import { Course } from "../models/course.model.js";
+// import { Course } from "../models/course.model.js";
 
-// const Course = require("../models/course.model");
+const Course = require("../models/course.model");
 
 // Get all courses
 const getAllCourses = async (req, res) => {
@@ -132,8 +132,7 @@ const getDetails = async (req, res) => {
   }
 };
 
-
-export {
+module.exports = {
   getAllCourses,
   getPaginatedCourses,
   createCourse,

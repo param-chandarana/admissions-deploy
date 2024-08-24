@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
+// import mongoose from "mongoose";
 
-// const mongoose = require("mongoose");
+const mongoose = require("mongoose");
 
 const courseSchema = new mongoose.Schema(
   {
@@ -57,8 +57,7 @@ courseSchema.pre("save", async function (next) {
   next();
 });
 
-export const Course = mongoose.model("Course", courseSchema);
+// export const Course = mongoose.model("Course", courseSchema);
+const Course = mongoose.model("Course", courseSchema);
 
-// const Course = mongoose.model("Course", courseSchema);
-
-// module.exports = Course;
+module.exports = Course;

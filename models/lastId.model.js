@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
+// import mongoose from "mongoose";
 
-// const mongoose = require("mongoose");
+const mongoose = require("mongoose");
 
 const lastIdSchema = new mongoose.Schema(
   {
@@ -23,9 +23,9 @@ lastIdSchema.pre("save", async function (next) {
   next();
 });
 
-export const LastId = mongoose.model("LastId", lastIdSchema);
+// export const LastId = mongoose.model("LastId", lastIdSchema);
 
-// const LastId = mongoose.model("LastId", lastIdSchema);
+const LastId = mongoose.model("LastId", lastIdSchema);
 
-// module.exports = LastId;
+module.exports = LastId;
 
