@@ -38,7 +38,7 @@ const OfferLetterButton = ({ studentData }) => {
       // Show success toast
       toast.success("Offer letter generated successfully");
     } catch (error) {
-      // console.error('Error generating offer letter:', error);
+      console.error('Error generating offer letter:', error);
       // Show error toast
       toast.error("Error generating offer letter");
     }
