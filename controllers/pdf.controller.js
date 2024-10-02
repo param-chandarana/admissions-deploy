@@ -1,29 +1,20 @@
-const fs = require("fs");
-const wkhtmltopdf = require("wkhtmltopdf");
-const path = require("path");
-const { promisify } = require("util");
-
-// Promisify fs.unlink for easier async/await usage
-const unlinkAsync = promisify(fs.unlink);
-
 const generateOfferLetter = async (req, res, next) => {
   try {
-    // Define the output PDF file path using the /tmp directory for Azure
     const outputFilePath = path.join("/tmp", "offer_letter.pdf");
+    console.log("Output PDF Path:", outputFilePath); // Log the output file path
 
     // Ensure the directory exists
     const directoryPath = path.dirname(outputFilePath);
     if (!fs.existsSync(directoryPath)) {
+      console.log("Creating directory:", directoryPath);
       fs.mkdirSync(directoryPath, { recursive: true });
     }
 
-    // Read the HTML template from a file
     const htmlTemplate = fs.readFileSync(
       path.join(__dirname, "../template/offerLetterTemplate.html"),
       "utf8"
     );
 
-    // Generate PDF from the HTML template
     await new Promise((resolve, reject) => {
       wkhtmltopdf(htmlTemplate, { output: outputFilePath })
         .on("error", (err) => {
@@ -53,8 +44,7 @@ const generateOfferLetter = async (req, res, next) => {
       res.status(404).send("PDF file not found.");
     }
   } catch (error) {
+    console.error("Error occurred:", error); // Log any unexpected errors
     next(error);
   }
 };
-
-module.exports = { generateOfferLetter };
