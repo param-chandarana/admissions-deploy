@@ -71,6 +71,7 @@ const generateOfferLetter = async (req, res, next) => {
     // });
     const browser = await puppeteer.launch({
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      executablePath: "/opt/render/.cache/puppeteer",
     });
 
     const page = await browser.newPage();
