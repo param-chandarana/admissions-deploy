@@ -1,7 +1,13 @@
+const path = require("path");
+const fs = require("fs");
+const wkhtmltopdf = require("wkhtmltopdf");
+const { promisify } = require("util");
+const unlinkAsync = promisify(fs.unlink);
+
 const generateOfferLetter = async (req, res, next) => {
   try {
     const outputFilePath = path.join("/tmp", "offer_letter.pdf");
-    console.log("Output PDF Path:", outputFilePath); // Log the output file path
+    console.log("Output PDF Path:", outputFilePath);
 
     // Ensure the directory exists
     const directoryPath = path.dirname(outputFilePath);
@@ -44,7 +50,9 @@ const generateOfferLetter = async (req, res, next) => {
       res.status(404).send("PDF file not found.");
     }
   } catch (error) {
-    console.error("Error occurred:", error); // Log any unexpected errors
+    console.error("Error occurred:", error);
     next(error);
   }
 };
+
+module.exports = { generateOfferLetter };
