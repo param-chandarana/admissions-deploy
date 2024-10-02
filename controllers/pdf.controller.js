@@ -71,7 +71,6 @@ const generateOfferLetter = async (req, res, next) => {
     // });
     const browser = await puppeteer.launch({
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
-      executablePath: process.env.CHROME_PATH || "/usr/bin/google-chrome", // Change this path if needed
     });
 
     const page = await browser.newPage();
