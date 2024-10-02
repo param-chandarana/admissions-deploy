@@ -15,7 +15,7 @@ const generateOfferLetter = async (req, res, next) => {
     );
 
     // Define the output PDF file path
-    const outputFilePath = path.join(__dirname, "..", "offer_letter.pdf");
+    const outputFilePath = path.join(__dirname, "offer_letter.pdf");
 
     // Generate PDF and write to the file
     await new Promise((resolve, reject) => {
