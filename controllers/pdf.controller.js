@@ -8,35 +8,51 @@ const unlinkAsync = promisify(fs.unlink);
 
 const generateOfferLetter = async (req, res, next) => {
   try {
+    // Define the output PDF file path using the /tmp directory for Azure
+    const outputFilePath = path.join("/tmp", "offer_letter.pdf");
+
+    // Ensure the directory exists
+    const directoryPath = path.dirname(outputFilePath);
+    if (!fs.existsSync(directoryPath)) {
+      fs.mkdirSync(directoryPath, { recursive: true });
+    }
+
     // Read the HTML template from a file
     const htmlTemplate = fs.readFileSync(
-      path.join(__dirname, "..", "template", "offerLetterTemplate.html"),
+      path.join(__dirname, "../template/offerLetterTemplate.html"),
       "utf8"
     );
 
-    // Define the output PDF file path
-    const outputFilePath = path.join(__dirname, "offer_letter.pdf");
-
-    // Generate PDF and write to the file
+    // Generate PDF from the HTML template
     await new Promise((resolve, reject) => {
       wkhtmltopdf(htmlTemplate, { output: outputFilePath })
         .on("error", (err) => {
-          console.error("wkhtmltopdf error:", err);
+          console.error("Error generating PDF:", err);
           reject(err);
         })
-        .on("end", () => resolve());
+        .on("end", () => {
+          console.log("PDF generated successfully at:", outputFilePath);
+          resolve();
+        });
     });
 
-    // Send the generated PDF as a response
-    res.sendFile(outputFilePath, (err) => {
-      if (err) return next(err);
-      // Delete the file after sending it
-      unlinkAsync(outputFilePath).catch((err) =>
-        console.error("Failed to delete PDF file:", err)
-      );
-    });
+    // Check if the PDF file exists before sending it
+    if (fs.existsSync(outputFilePath)) {
+      console.log("File exists, sending:", outputFilePath);
+      res.sendFile(outputFilePath, (err) => {
+        if (err) {
+          console.error("Error sending file:", err);
+        }
+        // Optionally delete the file after sending
+        unlinkAsync(outputFilePath).catch((err) =>
+          console.error("Failed to delete PDF file:", err)
+        );
+      });
+    } else {
+      console.error("PDF file not found:", outputFilePath);
+      res.status(404).send("PDF file not found.");
+    }
   } catch (error) {
-    console.error("Error in generating PDF:", error);
     next(error);
   }
 };
