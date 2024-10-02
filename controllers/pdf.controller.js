@@ -6,8 +6,12 @@ const unlinkAsync = promisify(fs.unlink);
 
 const generateOfferLetter = async (req, res, next) => {
   try {
-    const outputFilePath = path.join("/tmp", "offer_letter.pdf");
-    console.log("Output PDF Path:", outputFilePath);
+    // Use appropriate temp directory for Azure App Service (Linux: /tmp, Windows: process.env.TEMP)
+    const outputFilePath = path.join(
+      process.env.TEMP || "/tmp",
+      "offer_letter.pdf"
+    );
+    console.log("Output PDF Path:", outputFilePath); // Log the output file path
 
     // Ensure the directory exists
     const directoryPath = path.dirname(outputFilePath);
@@ -16,11 +20,13 @@ const generateOfferLetter = async (req, res, next) => {
       fs.mkdirSync(directoryPath, { recursive: true });
     }
 
+    // Read the HTML template for the offer letter
     const htmlTemplate = fs.readFileSync(
       path.join(__dirname, "../template/offerLetterTemplate.html"),
       "utf8"
     );
 
+    // Generate PDF using wkhtmltopdf
     await new Promise((resolve, reject) => {
       wkhtmltopdf(htmlTemplate, { output: outputFilePath })
         .on("error", (err) => {
@@ -50,7 +56,7 @@ const generateOfferLetter = async (req, res, next) => {
       res.status(404).send("PDF file not found.");
     }
   } catch (error) {
-    console.error("Error occurred:", error);
+    console.error("Error occurred:", error); // Log any unexpected errors
     next(error);
   }
 };
