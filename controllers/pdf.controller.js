@@ -1,32 +1,30 @@
 const path = require("path");
 const fs = require("fs");
 const wkhtmltopdf = require("wkhtmltopdf");
-const { promisify } = require("util");
-const unlinkAsync = promisify(fs.unlink);
 
 const generateOfferLetter = async (req, res, next) => {
   try {
-    // Use appropriate temp directory for Azure App Service (Linux: /tmp, Windows: process.env.TEMP)
-    const outputFilePath = path.join(
-      process.env.TEMP || "/tmp",
-      "offer_letter.pdf"
-    );
-    console.log("Output PDF Path:", outputFilePath); // Log the output file path
+    const tempDir = "/tmp";
+    console.log("Using temp directory:", tempDir);
 
-    // Ensure the directory exists
-    const directoryPath = path.dirname(outputFilePath);
-    if (!fs.existsSync(directoryPath)) {
-      console.log("Creating directory:", directoryPath);
-      fs.mkdirSync(directoryPath, { recursive: true });
+    // Ensure the temp directory is writable
+    const testFilePath = path.join(tempDir, "test.txt");
+    try {
+      fs.writeFileSync(testFilePath, "Write test content");
+      console.log(`Successfully wrote test file: ${testFilePath}`);
+      fs.unlinkSync(testFilePath); // Clean up test file
+    } catch (err) {
+      console.error(`Failed to write to temp directory (${tempDir}).`, err);
+      return res.status(500).send("Temp directory is not writable.");
     }
 
-    // Read the HTML template for the offer letter
     const htmlTemplate = fs.readFileSync(
       path.join(__dirname, "../template/offerLetterTemplate.html"),
       "utf8"
     );
 
-    // Generate PDF using wkhtmltopdf
+    const outputFilePath = path.join(tempDir, "offer_letter.pdf");
+
     await new Promise((resolve, reject) => {
       wkhtmltopdf(htmlTemplate, { output: outputFilePath })
         .on("error", (err) => {
@@ -39,7 +37,10 @@ const generateOfferLetter = async (req, res, next) => {
         });
     });
 
-    // Check if the PDF file exists before sending it
+    // Add a short delay before checking for the PDF file
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    // Check if the PDF exists before sending it
     if (fs.existsSync(outputFilePath)) {
       console.log("File exists, sending:", outputFilePath);
       res.sendFile(outputFilePath, (err) => {
@@ -47,16 +48,18 @@ const generateOfferLetter = async (req, res, next) => {
           console.error("Error sending file:", err);
         }
         // Optionally delete the file after sending
-        unlinkAsync(outputFilePath).catch((err) =>
-          console.error("Failed to delete PDF file:", err)
-        );
+        fs.unlink(outputFilePath, (unlinkErr) => {
+          if (unlinkErr) {
+            console.error("Failed to delete PDF file:", unlinkErr);
+          }
+        });
       });
     } else {
       console.error("PDF file not found:", outputFilePath);
       res.status(404).send("PDF file not found.");
     }
   } catch (error) {
-    console.error("Error occurred:", error); // Log any unexpected errors
+    console.error("Error occurred:", error);
     next(error);
   }
 };
