@@ -1,57 +1,76 @@
 import React from "react";
-import axios from "axios";
+import {
+  PDFDownloadLink,
+  Document,
+  Page,
+  Text,
+  View,
+} from "@react-pdf/renderer";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFile } from "@fortawesome/free-solid-svg-icons";
 
+const OfferLetterDocument = ({ studentData }) => (
+  <Document>
+    <Page size="A4">
+      <View>
+        <Text>Student ID: {studentData.studentId}</Text>
+        <Text>Student Name: {studentData.studentName}</Text>
+        <Text>Country: {studentData.countryName}</Text>
+        <Text>Qualification: {studentData.qualification}</Text>
+        <Text>Course of Study: {studentData.courseOfStudy}</Text>
+        <Text>Duration: {studentData.duration}</Text>
+        <Text>
+          Total Annual Tuition Fee: {studentData.totalAnnualTuitionFee}
+        </Text>
+        <Text>
+          Hostel, Mess, and Other Fees: {studentData.hostelMessAndOtherFees}
+        </Text>
+        <Text>Total Annual Fees: {studentData.totalAnnualFees}</Text>
+        <Text>
+          Special Scholarship: {studentData.specialScholarshipFromInstitute}
+        </Text>
+        <Text>
+          MUP President's Special Scholarship:{" "}
+          {studentData.MUPresidentsSpecialScholarship}
+        </Text>
+        <Text>Net Annual Fee Payable: {studentData.netAnnualFeePayable}</Text>
+      </View>
+    </Page>
+  </Document>
+);
+
 const OfferLetterButton = ({ studentData }) => {
-  const handleGenerateOfferLetter = async () => {
-    try {
-      // Extract last three characters of studentId
-      const studentId = studentData.studentId;
-      const fileName = studentId
-        .substring(studentId.length - 3)
-        .replace(/^0+/, ""); // Remove leading zeroes
-
-      // Send request to server to generate offer letter
-      const response = await axios.post(
-        `/api/pdf/generate`,
-        studentData,
-        {
-          responseType: "blob", // Receive response as a Blob
-        }
-      );
-
-      // Create a blob URL for the PDF
-      const pdfBlob = new Blob([response.data], { type: "application/pdf" });
-      const url = window.URL.createObjectURL(pdfBlob);
-
-      // Initiate download for the PDF with modified file name
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `${fileName}.pdf`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-      // Show success toast
-      toast.success("Offer letter generated successfully");
-    } catch (error) {
-      console.error('Error generating offer letter:', error);
-      // Show error toast
-      toast.error("Error generating offer letter");
-    }
-  };
+  const fileName = studentData.studentId
+    .substring(studentData.studentId.length - 3)
+    .replace(/^0+/, ""); // Remove leading zeroes
 
   return (
-    <button
-      className="btn btn-offer-letter px-1"
-      data-bs-toggle="tooltip" title="Generate Offer Letter"
-      onClick={handleGenerateOfferLetter}
+    <PDFDownloadLink
+      document={<OfferLetterDocument studentData={studentData} />}
+      fileName={`${fileName}.pdf`}
+      style={{ textDecoration: "none" }}
     >
-      <FontAwesomeIcon icon={faFile} />
-    </button>
+      {({ blob, url, loading, error }) => (
+        <button
+          className="btn btn-offer-letter px-1"
+          data-bs-toggle="tooltip"
+          onClick={() => {
+            if (loading) {
+              toast.info("Generating offer letter...");
+            } else if (error) {
+              toast.error("Error generating offer letter");
+            } else {
+              toast.success("Offer letter generated successfully");
+            }
+          }}
+          disabled={loading}
+        >
+          <FontAwesomeIcon icon={faFile} />
+        </button>
+      )}
+    </PDFDownloadLink>
   );
 };
 
