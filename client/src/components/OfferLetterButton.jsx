@@ -10,35 +10,10 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFile } from "@fortawesome/free-solid-svg-icons";
+import OfferLetterPDF from "./OfferLetterPDF";
 
 const OfferLetterDocument = ({ studentData }) => (
-  <Document>
-    <Page size="A4">
-      <View>
-        <Text>Student ID: {studentData.studentId}</Text>
-        <Text>Student Name: {studentData.studentName}</Text>
-        <Text>Country: {studentData.countryName}</Text>
-        <Text>Qualification: {studentData.qualification}</Text>
-        <Text>Course of Study: {studentData.courseOfStudy}</Text>
-        <Text>Duration: {studentData.duration}</Text>
-        <Text>
-          Total Annual Tuition Fee: {studentData.totalAnnualTuitionFee}
-        </Text>
-        <Text>
-          Hostel, Mess, and Other Fees: {studentData.hostelMessAndOtherFees}
-        </Text>
-        <Text>Total Annual Fees: {studentData.totalAnnualFees}</Text>
-        <Text>
-          Special Scholarship: {studentData.specialScholarshipFromInstitute}
-        </Text>
-        <Text>
-          MUP President's Special Scholarship:{" "}
-          {studentData.MUPresidentsSpecialScholarship}
-        </Text>
-        <Text>Net Annual Fee Payable: {studentData.netAnnualFeePayable}</Text>
-      </View>
-    </Page>
-  </Document>
+  <OfferLetterPDF studentData={studentData} />
 );
 
 const OfferLetterButton = ({ studentData }) => {
