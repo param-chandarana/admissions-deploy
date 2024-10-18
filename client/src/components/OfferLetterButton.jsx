@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  PDFDownloadLink,
-  Document,
-  Page,
-  Text,
-  View,
-} from "@react-pdf/renderer";
+import { PDFDownloadLink } from "@react-pdf/renderer";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

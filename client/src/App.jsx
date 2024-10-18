@@ -33,10 +33,17 @@ function MainApp() {
       {!shouldHideNavbar && <Navbar />}
       <Routes>
         <Route path="" element={<Private />}>
-          <Route exact="true" path="/" element={<StudentForm isEditMode={false} />} />
+          <Route
+            exact="true"
+            path="/"
+            element={<StudentForm isEditMode={false} />}
+          />
           <Route exact="true" path="/students" element={<StudentDetails />} />
           <Route exact="true" path="/courses" element={<CourseDetails />} />
-          <Route path="/courses/add" element={<CourseForm isEditMode={false} />} />
+          <Route
+            path="/courses/add"
+            element={<CourseForm isEditMode={false} />}
+          />
           <Route
             path="/students/edit/:studentId"
             element={<StudentForm studentId={""} isEditMode={true} />}
