@@ -1,7 +1,6 @@
 import React from "react";
 import { Page, Text, View, Document, StyleSheet } from "@react-pdf/renderer";
 
-// Create styles
 const styles = StyleSheet.create({
   page: {
     paddingTop: 7.370079,
@@ -37,6 +36,35 @@ const styles = StyleSheet.create({
     wordBreak: "break-word",
     hyphens: "none",
   },
+  bulletPoint: {
+    textAlign: "justify",
+    fontSize: 12,
+    marginLeft: 20,
+    display: "inline-block",
+    transform: "translateY(-1px)",
+  },
+  bulletPointSecondPage: {
+    textAlign: "justify",
+    fontSize: 12,
+    marginLeft: 5,
+    display: "inline-block",
+    transform: "translateY(-1px)",
+  },
+  listNumber: {
+    textAlign: "justify",
+    fontSize: 9,
+    lineHeight: 1.2,
+    marginLeft: 13,
+    display: "inline-block",
+  },
+  listNumberSecondPage: {
+    textAlign: "justify",
+    fontFamily: "Helvetica-Bold",
+    fontSize: 9,
+    lineHeight: 1.2,
+    display: "inline-block",
+    fontWeight: 700,
+  },
   table: {
     display: "table",
     width: "auto",
@@ -47,25 +75,85 @@ const styles = StyleSheet.create({
   },
   tableColSmall: {
     width: "25%",
-    borderWidth: 1,
     borderColor: "#000",
+    borderTopWidth: 1,
+    borderLeftWidth: 1,
     padding: 4,
   },
-  tableCol: {
+  tableColBankDetails: {
     width: "50%",
     padding: 4,
+    borderTopWidth: 1,
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderColor: "#000",
   },
-  tableColListIcon: {
-    width: "3%",
-    textAlign: "right",
+  tableColBankDetailsLastRow: {
+    width: "50%",
+    padding: 4,
+    borderTopWidth: 1,
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: "#000",
   },
-  tableColListContent: {
-    paddingLeft: 4,
-    width: "96%",
+  tableColSmallLastRow: {
+    width: "25%",
+    borderColor: "#000",
+    borderTopWidth: 1,
+    borderLeftWidth: 1,
+    borderBottomWidth: 1,
+    padding: 4,
   },
   tableCell: {
     textAlign: "left",
     fontSize: 9,
+  },
+  tableCellBankDetails: {
+    textAlign: "left",
+    fontSize: 10,
+    fontWeight: 700,
+  },
+  tableCol: {
+    width: "50%",
+  },
+  firstTableColLeft: {
+    width: "64%",
+  },
+  firstTableColRight: {
+    width: "36%",
+  },
+  tableColListIcon: {
+    width: "7%",
+    textAlign: "right",
+  },
+  tableColListIconSecondPage: {
+    width: "3%",
+    textAlign: "right",
+  },
+  tableColLeftPadding: {
+    width: "10%",
+    textAlign: "right",
+  },
+  tableColListContent: {
+    paddingLeft: 1,
+    width: "93%",
+  },
+  tableColListContentSecondPage: {
+    paddingLeft: 1,
+    width: "97%",
+  },
+  tableColContentAfterPadding: {
+    width: "90%",
+    paddingLeft: 11,
+  },
+  tableCell: {
+    textAlign: "left",
+    fontSize: 9,
+  },
+  firstTableCell: {
+    textAlign: "left",
+    fontSize: 11,
   },
   footer: {
     fontSize: 10,
@@ -100,14 +188,19 @@ const OfferLetterDocument = ({ studentData }) => (
       {/* Header */}
       <View style={styles.table}>
         <View style={styles.tableRow}>
-          <View style={styles.tableCol}>
-            <Text style={styles.tableCell}>Ref: {studentData.studentId}</Text>
+          <View style={styles.firstTableColLeft}>
+            <Text style={styles.firstTableCell}>
+              <Text style={styles.textBold}>Ref: {studentData.studentId}</Text>
+            </Text>
           </View>
-          <View style={styles.tableCol}>
-            <Text style={styles.tableCell}>Date: 21st February, 2024</Text>
+          <View style={styles.firstTableColRight}>
+            <Text style={styles.firstTableCell}>
+              <Text style={styles.textBold}>Date:</Text> 21st February, 2024
+            </Text>
           </View>
         </View>
       </View>
+      <Text style={styles.marginBottom}></Text>
 
       {/* Title */}
       <View style={styles.title}>
@@ -163,7 +256,14 @@ const OfferLetterDocument = ({ studentData }) => (
       <View style={styles.table}>
         <View style={styles.tableRow}>
           <View style={styles.tableCol}>
-            <Text style={styles.tableCell}>Program Name</Text>
+            <View style={styles.tableRow}>
+              <View style={styles.tableColLeftPadding}>
+                <Text style={styles.text}>{"      "}</Text>
+              </View>
+              <View style={styles.tableColContentAfterPadding}>
+                <Text style={styles.tableCell}>Program Name</Text>
+              </View>
+            </View>
           </View>
           <View style={styles.tableCol}>
             <Text style={styles.tableCell}>
@@ -174,7 +274,14 @@ const OfferLetterDocument = ({ studentData }) => (
         </View>
         <View style={styles.tableRow}>
           <View style={styles.tableCol}>
-            <Text style={styles.tableCell}>Duration of Course</Text>
+            <View style={styles.tableRow}>
+              <View style={styles.tableColLeftPadding}>
+                <Text style={styles.text}>{"      "}</Text>
+              </View>
+              <View style={styles.tableColContentAfterPadding}>
+                <Text style={styles.tableCell}>Duration of Course</Text>
+              </View>
+            </View>
           </View>
           <View style={styles.tableCol}>
             <Text style={styles.tableCell}>
@@ -185,7 +292,14 @@ const OfferLetterDocument = ({ studentData }) => (
         </View>
         <View style={styles.tableRow}>
           <View style={styles.tableCol}>
-            <Text style={styles.tableCell}>Start Date</Text>
+            <View style={styles.tableRow}>
+              <View style={styles.tableColLeftPadding}>
+                <Text style={styles.text}>{"      "}</Text>
+              </View>
+              <View style={styles.tableColContentAfterPadding}>
+                <Text style={styles.tableCell}>Start Date</Text>
+              </View>
+            </View>
           </View>
           <View style={styles.tableCol}>
             <Text style={styles.tableCell}>:{"   "}01/07/2024</Text>
@@ -200,68 +314,112 @@ const OfferLetterDocument = ({ studentData }) => (
       <View style={styles.table}>
         <View style={styles.tableRow}>
           <View style={styles.tableCol}>
-            <Text style={styles.tableCell}>Total Annual Tuition Fee</Text>
+            <View style={styles.tableRow}>
+              <View style={styles.tableColLeftPadding}>
+                <Text style={styles.text}>{"      "}</Text>
+              </View>
+              <View style={styles.tableColContentAfterPadding}>
+                <Text style={styles.tableCell}>Total Annual Tuition Fee</Text>
+              </View>
+            </View>
           </View>
           <View style={styles.tableCol}>
             <Text style={styles.tableCell}>
-              {studentData.totalAnnualTuitionFee}
+              :{"   "}USD {studentData.totalAnnualTuitionFee}
             </Text>
           </View>
         </View>
         <View style={styles.tableRow}>
           <View style={styles.tableCol}>
-            <Text style={styles.tableCell}>Annual Food & Hostel Fee</Text>
+            <View style={styles.tableRow}>
+              <View style={styles.tableColLeftPadding}>
+                <Text style={styles.text}>{"      "}</Text>
+              </View>
+              <View style={styles.tableColContentAfterPadding}>
+                <Text style={styles.tableCell}>Annual Food & Hostel Fee</Text>
+              </View>
+            </View>
           </View>
           <View style={styles.tableCol}>
             <Text style={styles.tableCell}>
-              {studentData.hostelMessAndOtherFees}
+              :{"   "}USD {studentData.hostelMessAndOtherFees}
             </Text>
           </View>
         </View>
         <View style={styles.tableRow}>
           <View style={styles.tableCol}>
-            <Text style={styles.tableCell}>Total Annual Fee</Text>
-          </View>
-          <View style={styles.tableCol}>
-            <Text style={styles.tableCell}>{studentData.totalAnnualFees}</Text>
-          </View>
-        </View>
-        <View style={styles.tableRow}>
-          <View style={styles.tableCol}>
-            <Text style={styles.tableCell}>
-              Special Scholarship from Institute
-            </Text>
+            <View style={styles.tableRow}>
+              <View style={styles.tableColLeftPadding}>
+                <Text style={styles.text}>{"      "}</Text>
+              </View>
+              <View style={styles.tableColContentAfterPadding}>
+                <Text style={styles.tableCell}>Total Annual Fee</Text>
+              </View>
+            </View>
           </View>
           <View style={styles.tableCol}>
             <Text style={styles.tableCell}>
-              {studentData.specialScholarshipFromInstitute}
+              :{"   "}USD {studentData.totalAnnualFees}
             </Text>
           </View>
         </View>
         <View style={styles.tableRow}>
           <View style={styles.tableCol}>
-            <Text style={styles.tableCell}>
-              Marwadi University President’s Special Scholarship
-            </Text>
+            <View style={styles.tableRow}>
+              <View style={styles.tableColLeftPadding}>
+                <Text style={styles.text}>{"      "}</Text>
+              </View>
+              <View style={styles.tableColContentAfterPadding}>
+                <Text style={styles.tableCell}>
+                  Special Scholarship from Institute
+                </Text>
+              </View>
+            </View>
           </View>
           <View style={styles.tableCol}>
             <Text style={styles.tableCell}>
-              {studentData.MUPresidentsSpecialScholarship}
+              :{"   "}USD {studentData.specialScholarshipFromInstitute}
             </Text>
           </View>
         </View>
         <View style={styles.tableRow}>
+          <View style={styles.tableCol}>
+            <View style={styles.tableRow}>
+              <View style={styles.tableColLeftPadding}>
+                <Text style={styles.text}>{"      "}</Text>
+              </View>
+              <View style={styles.tableColContentAfterPadding}>
+                <Text style={styles.tableCell}>
+                  Marwadi University President’s Special Scholarship
+                </Text>
+              </View>
+            </View>
+          </View>
+          <View style={styles.tableCol}>
+            <Text style={styles.tableCell}>
+              :{"   "}USD {studentData.MUPresidentsSpecialScholarship}
+            </Text>
+          </View>
+        </View>
+        <View style={styles.tableRow}>
+          <View style={styles.tableCol}>
+            <View style={styles.tableRow}>
+              <View style={styles.tableColLeftPadding}>
+                <Text style={styles.text}>{"      "}</Text>
+              </View>
+              <View style={styles.tableColContentAfterPadding}>
+                <Text style={styles.tableCell}>
+                  <Text style={styles.textBold}>
+                    Net Annual Fee Payable per Year
+                  </Text>
+                </Text>
+              </View>
+            </View>
+          </View>
           <View style={styles.tableCol}>
             <Text style={styles.tableCell}>
               <Text style={styles.textBold}>
-                Net Annual Fee Payable per Year
-              </Text>
-            </Text>
-          </View>
-          <View style={styles.tableCol}>
-            <Text style={styles.tableCell}>
-              <Text style={styles.textBold}>
-                {studentData.netAnnualFeePayable}
+                :{"   "}USD {studentData.netAnnualFeePayable}
               </Text>
             </Text>
           </View>
@@ -275,7 +433,7 @@ const OfferLetterDocument = ({ studentData }) => (
       <View style={styles.table}>
         <View style={styles.tableRow}>
           <View style={styles.tableColListIcon}>
-            <Text style={styles.text}>•</Text>
+            <Text style={styles.bulletPoint}>•</Text>
           </View>
           <View style={styles.tableColListContent}>
             <Text style={styles.text}>
@@ -286,7 +444,7 @@ const OfferLetterDocument = ({ studentData }) => (
         </View>
         <View style={styles.tableRow}>
           <View style={styles.tableColListIcon}>
-            <Text style={styles.text}>•</Text>
+            <Text style={styles.bulletPoint}>•</Text>
           </View>
           <View style={styles.tableColListContent}>
             <Text style={styles.text}>
@@ -298,7 +456,7 @@ const OfferLetterDocument = ({ studentData }) => (
         </View>
         <View style={styles.tableRow}>
           <View style={styles.tableColListIcon}>
-            <Text style={styles.text}>•</Text>
+            <Text style={styles.bulletPoint}>•</Text>
           </View>
           <View style={styles.tableColListContent}>
             <Text style={styles.text}>
@@ -311,7 +469,7 @@ const OfferLetterDocument = ({ studentData }) => (
         </View>
         <View style={styles.tableRow}>
           <View style={styles.tableColListIcon}>
-            <Text style={styles.text}>•</Text>
+            <Text style={styles.bulletPoint}>•</Text>
           </View>
           <View style={styles.tableColListContent}>
             <Text style={styles.text}>
@@ -331,13 +489,13 @@ const OfferLetterDocument = ({ studentData }) => (
       </Text>
       <Text style={styles.text}>
         On receiving the ‘Acceptance of Offer Letter’, we will verify that the
-        conditions (if any) have been met and will issue you the {"\n"}‘
+        conditions (if any) have been met and will issue you the ‘
         <Text style={styles.textBold}>Acceptance Letter</Text>’. The Acceptance
         Letter can be used to apply for a Student Visa in the nearest Indian
         Embassy/Consulate in your home country.{" "}
         <Text style={styles.textBold}>
           Please ensure to apply for the visa in advance as visa process may
-          take 3-6 weeks.
+          take 3 - 6 weeks.
         </Text>
       </Text>
 
@@ -346,7 +504,7 @@ const OfferLetterDocument = ({ studentData }) => (
       <View style={styles.table}>
         <View style={styles.tableRow}>
           <View style={styles.tableColListIcon}>
-            <Text style={styles.text}>1.)</Text>
+            <Text style={styles.listNumber}>1.)</Text>
           </View>
           <View style={styles.tableColListContent}>
             <Text style={styles.text}>
@@ -364,7 +522,7 @@ const OfferLetterDocument = ({ studentData }) => (
         </View>
         <View style={styles.tableRow}>
           <View style={styles.tableColListIcon}>
-            <Text style={styles.text}>2.)</Text>
+            <Text style={styles.listNumber}>2.)</Text>
           </View>
           <View style={styles.tableColListContent}>
             <Text style={styles.text}>
@@ -376,19 +534,20 @@ const OfferLetterDocument = ({ studentData }) => (
         </View>
         <View style={styles.tableRow}>
           <View style={styles.tableColListIcon}>
-            <Text style={styles.text}>3.)</Text>
+            <Text style={styles.listNumber}>3.)</Text>
           </View>
           <View style={styles.tableColListContent}>
             <Text style={styles.text}>
               Applicants who are either waiting for the result or appearing for
               the qualifying exam must furnish the result of their qualifying
-              exam.
+              exam. to the Marwadi University before the last date as specified
+              by the Marwadi University.
             </Text>
           </View>
         </View>
         <View style={styles.tableRow}>
           <View style={styles.tableColListIcon}>
-            <Text style={styles.text}>4.)</Text>
+            <Text style={styles.listNumber}>4.)</Text>
           </View>
           <View style={styles.tableColListContent}>
             <Text style={styles.text}>
@@ -399,7 +558,7 @@ const OfferLetterDocument = ({ studentData }) => (
         </View>
         <View style={styles.tableRow}>
           <View style={styles.tableColListIcon}>
-            <Text style={styles.text}>5.)</Text>
+            <Text style={styles.listNumber}>5.)</Text>
           </View>
           <View style={styles.tableColListContent}>
             <Text style={styles.text}>
@@ -410,37 +569,6 @@ const OfferLetterDocument = ({ studentData }) => (
           </View>
         </View>
       </View>
-      {/* <View>
-        <Text style={styles.text}>
-          1.) The student should fill and submit the ‘Acceptance of Offer
-          Letter’ at the earliest within{" "}
-          <Text style={styles.textBold}>10 days</Text> of issuing this Offer of
-          Admission. Any extension or delay in payment of advance fee shall be
-          informed to International Department of the Marwadi University through
-          e mail at:{" "}
-          <Text style={styles.textBoldUnderline}>
-            studyinindia@marwadiuniversity.ac.in
-          </Text>
-        </Text>
-        <Text style={styles.text}>
-          2.) At the time of reporting (joining) at the Marwadi University, it
-          is mandatory for international students to get their
-          eligibility/qualifying certificates verified with their originals.
-        </Text>
-        <Text style={styles.text}>
-          3.) Applicants who are either waiting for the result or appearing for
-          the qualifying exam must furnish the result of their qualifying exam.
-        </Text>
-        <Text style={styles.text}>
-          4.) Students are required to report (join) at the Marwadi University
-          as per the schedule of Start of Session.
-        </Text>
-        <Text style={styles.text}>
-          5.) Submission of application form or any other document or generation
-          of Offer Letter and Registration Number etc. does not guarantee
-          admission to any Program.
-        </Text>
-      </View> */}
     </Page>
 
     {/* Page 2 */}
@@ -451,70 +579,72 @@ const OfferLetterDocument = ({ studentData }) => (
       <View style={styles.table}>
         <View style={styles.tableRow}>
           <View style={styles.tableColSmall}>
-            <Text style={styles.tableCell}>Beneficiary Details</Text>
+            <Text style={styles.tableCellBankDetails}>Beneficiary Details</Text>
           </View>
           <View style={styles.tableColSmall}>
-            <Text style={styles.tableCell}>Bank Name</Text>
+            <Text style={styles.tableCellBankDetails}>Bank Name</Text>
           </View>
-          <View style={styles.tableCol}>
-            <Text style={styles.tableCell}>BANK OF INDIA</Text>
+          <View style={styles.tableColBankDetails}>
+            <Text style={styles.tableCellBankDetails}>BANK OF INDIA</Text>
           </View>
         </View>
         <View style={styles.tableRow}>
           <View style={styles.tableColSmall}>
-            <Text style={styles.tableCell}></Text>
+            <Text style={styles.tableCellBankDetails}></Text>
           </View>
           <View style={styles.tableColSmall}>
-            <Text style={styles.tableCell}>Account Name:</Text>
+            <Text style={styles.tableCellBankDetails}>Account Name:</Text>
           </View>
-          <View style={styles.tableCol}>
-            <Text style={styles.tableCell}>MEFGI - FACULTY OF ENGINEERING</Text>
+          <View style={styles.tableColBankDetails}>
+            <Text style={styles.tableCellBankDetails}>
+              MEFGI - FACULTY OF ENGINEERING
+            </Text>
           </View>
         </View>
         <View style={styles.tableRow}>
           <View style={styles.tableColSmall}>
-            <Text style={styles.tableCell}></Text>
+            <Text style={styles.tableCellBankDetails}></Text>
           </View>
           <View style={styles.tableColSmall}>
-            <Text style={styles.tableCell}>Account Number:</Text>
+            <Text style={styles.tableCellBankDetails}>Account Number:</Text>
           </View>
-          <View style={styles.tableCol}>
-            <Text style={styles.tableCell}>313220110000012</Text>
+          <View style={styles.tableColBankDetails}>
+            <Text style={styles.tableCellBankDetails}>313220110000012</Text>
           </View>
         </View>
         <View style={styles.tableRow}>
           <View style={styles.tableColSmall}>
-            <Text style={styles.tableCell}></Text>
+            <Text style={styles.tableCellBankDetails}></Text>
           </View>
           <View style={styles.tableColSmall}>
-            <Text style={styles.tableCell}>Branch:</Text>
+            <Text style={styles.tableCellBankDetails}>Branch:</Text>
           </View>
-          <View style={styles.tableCol}>
-            <Text style={styles.tableCell}>
+          <View style={styles.tableColBankDetails}>
+            <Text style={styles.tableCellBankDetails}>
               MARWADI EDUCATION CAMPUS BRANCH, RAJKOT
             </Text>
           </View>
         </View>
         <View style={styles.tableRow}>
           <View style={styles.tableColSmall}>
-            <Text style={styles.tableCell}></Text>
+            <Text style={styles.tableCellBankDetails}></Text>
           </View>
           <View style={styles.tableColSmall}>
-            <Text style={styles.tableCell}>SWIFT Code</Text>
+            <Text style={styles.tableCellBankDetails}>SWIFT Code</Text>
           </View>
-          <View style={styles.tableCol}>
-            <Text style={styles.tableCell}>BKIDINBBRAJ</Text>
+          <View style={styles.tableColBankDetails}>
+            <Text style={styles.tableCellBankDetails}>BKIDINBBRAJ</Text>
           </View>
         </View>
         <View style={styles.tableRow}>
-          <View style={styles.tableColSmall}>
-            <Text style={styles.tableCell}></Text>
+          <View style={styles.tableColSmallLastRow}>
+            <Text style={styles.tableCellBankDetails}></Text>
           </View>
-          <View style={styles.tableColSmall}>
-            <Text style={styles.tableCell}>ISFC Code:</Text>
+          <View style={styles.tableColSmallLastRow}>
+            <Text style={styles.tableCellBankDetails}>IFSC Code:</Text>
           </View>
-          <View style={styles.tableCol}>
-            <Text style={styles.tableCell}>BKID0003132</Text>
+          <View style={styles.tableColBankDetailsLastRow}>
+            <Text style={styles.tableCellBankDetails}>BKID0003132</Text>
           </View>
         </View>
       </View>
@@ -525,59 +655,130 @@ const OfferLetterDocument = ({ studentData }) => (
       </Text>
       <Text style={styles.marginBottom}></Text>
       <View>
-        <Text style={styles.text}>
-          • All International students have to pay their course fee
-          semester-wise.
-        </Text>
-        <Text style={styles.text}>
-          • Bank charges, in case online transfer of fee, will be borne by the
-          applicant. The Marwadi University will credit the same amount which
-          will be received in its account. The student will have to deposit the
-          balance in case of any difference in the amount received by the
-          Marwadi University in its bank account.
-        </Text>
-        <Text style={styles.text}>
-          • Student should confirm the successful transfer of his/her fee by
-          sending the scan copy of transaction proof through e mail at:
-          <Text style={styles.textBold}>
-            studyinindia@marwadiuniversity.ac.in
-          </Text>{" "}
-          and shall retain original proof of the fee transferred and produce it
-          while reporting at the Marwadi University
-        </Text>
+        <View style={styles.tableRow}>
+          <View style={styles.tableColListIconSecondPage}>
+            <Text style={styles.bulletPointSecondPage}>•</Text>
+          </View>
+          <View style={styles.tableColListContentSecondPage}>
+            <Text style={styles.text}>
+              All International students has to pay their course fee
+              semester-wise.
+            </Text>
+          </View>
+        </View>
+        <View style={styles.tableRow}>
+          <View style={styles.tableColListIconSecondPage}>
+            <Text style={styles.bulletPointSecondPage}>•</Text>
+          </View>
+          <View style={styles.tableColListContentSecondPage}>
+            <Text style={styles.text}>
+              Bank charges, in case online transfer of fee, will be borne by the
+              applicant. The Marwadi University will credit the same amount
+              which will be received in its account. The student will have to
+              deposit the balance in case of any difference in the amount
+              received by the Marwadi University in its bank account.
+            </Text>
+          </View>
+        </View>
+        <View style={styles.tableRow}>
+          <View style={styles.tableColListIconSecondPage}>
+            <Text style={styles.bulletPointSecondPage}>•</Text>
+          </View>
+          <View style={styles.tableColListContentSecondPage}>
+            <Text style={styles.text}>
+              Student should confirm the successful transfer of his/her fee by
+              sending the scan copy of transaction proof through e mail at:{" "}
+              <Text style={styles.textBold}>
+                studyinindia@marwadiuniversity.ac.in
+              </Text>{" "}
+              and shall retain original proof of the fee transferred and produce
+              it while reporting at the Marwadi University
+            </Text>
+          </View>
+        </View>
       </View>
 
       <Text style={styles.sectionUnderline}>
         Instructions while Reporting/Joining at the Marwadi University:
       </Text>
       <View>
-        <Text style={styles.text}>
-          1. The student is strongly advised to clear the first semester fee and
-          one-year residential fee before joining the Marwadi University.
-        </Text>
-        <Text style={styles.text}>
-          2. Document checklist (while reporting at the Marwadi University):
-        </Text>
-        <Text style={styles.text}>
-          a. Original Eligibility Certificates, Mark sheets, Transcripts and
-          other related documents for admission verification
-        </Text>
-        <Text style={styles.text}>
-          b. Passport with India Student Visa endorsed in the name of Marwadi
-          University (National Identification Proof in case resident of Bhutan
-          or Nepal)
-        </Text>
-        <Text style={styles.text}>
-          c. Original Medical Fitness Certificate and Valid Health Insurance
-          policy from the home country (Mandatory)
-        </Text>
-        <Text style={styles.text}>d. Permanent Residential Address proof</Text>
-        <Text style={styles.text}>
-          3. As per government guidelines, an international student must apply
-          for FRO within the first 14 days of his/her arrival in India. The
-          student should ensure to submit a copy of the FRO certificate to the
-          Marwadi University within the stipulated time.
-        </Text>
+        <View style={styles.tableRow}>
+          <View style={styles.tableColListIconSecondPage}>
+            <Text style={styles.listNumberSecondPage}>1.</Text>
+          </View>
+          <View style={styles.tableColListContentSecondPage}>
+            <Text style={styles.text}>
+              The student is strongly advised to clear the first semester fee
+              and one-year residential fee before joining the Marwadi
+              University.
+            </Text>
+          </View>
+        </View>
+        <View style={styles.tableRow}>
+          <View style={styles.tableColListIconSecondPage}>
+            <Text style={styles.listNumberSecondPage}>2.</Text>
+          </View>
+          <View style={styles.tableColListContentSecondPage}>
+            <Text style={styles.text}>
+              Document checklist (while reporting at the Marwadi University):
+            </Text>
+          </View>
+        </View>
+        <View style={styles.tableRow}>
+          <View style={styles.tableColListIconSecondPage}>
+            <Text style={styles.listNumberSecondPage}>a.</Text>
+          </View>
+          <View style={styles.tableColListContentSecondPage}>
+            <Text style={styles.text}>
+              Original Eligibility Certificates, Mark sheets, Transcripts and
+              other related documents for admission verification
+            </Text>
+          </View>
+        </View>
+        <View style={styles.tableRow}>
+          <View style={styles.tableColListIconSecondPage}>
+            <Text style={styles.listNumberSecondPage}>b.</Text>
+          </View>
+          <View style={styles.tableColListContentSecondPage}>
+            <Text style={styles.text}>
+              Passport with India Student Visa endorsed in the name of Marwadi
+              University (National Identification Proof in case resident of
+              Bhutan or Nepal)
+            </Text>
+          </View>
+        </View>
+        <View style={styles.tableRow}>
+          <View style={styles.tableColListIconSecondPage}>
+            <Text style={styles.listNumberSecondPage}>c.</Text>
+          </View>
+          <View style={styles.tableColListContentSecondPage}>
+            <Text style={styles.text}>
+              Original Medical Fitness Certificate and Valid Health Insurance
+              policy from the home country (Mandatory)
+            </Text>
+          </View>
+        </View>
+        <View style={styles.tableRow}>
+          <View style={styles.tableColListIconSecondPage}>
+            <Text style={styles.listNumberSecondPage}>d.</Text>
+          </View>
+          <View style={styles.tableColListContentSecondPage}>
+            <Text style={styles.text}>Permanent Residential Address proof</Text>
+          </View>
+        </View>
+        <View style={styles.tableRow}>
+          <View style={styles.tableColListIconSecondPage}>
+            <Text style={styles.listNumberSecondPage}>3.</Text>
+          </View>
+          <View style={styles.tableColListContentSecondPage}>
+            <Text style={styles.text}>
+              As per government guidelines, an international student must apply
+              for FRO within the first 14 days of his/her arrival in India. The
+              student should ensure to submit a copy of the FRO certificate to
+              the Marwadi University within the stipulated time.
+            </Text>
+          </View>
+        </View>
       </View>
 
       {/* Medical Certification */}
@@ -620,8 +821,9 @@ const OfferLetterDocument = ({ studentData }) => (
       </Text>
       <Text style={styles.marginBottom}></Text>
       <Text>Best Wishes</Text>
-      <Text>International Admissions</Text>
-      <Text>Marwadi University</Text>
+      <Text style={styles.marginBottom}></Text>
+      <Text style={styles.textBold}>International Admissions,</Text>
+      <Text style={styles.textBold}>Marwadi University</Text>
     </Page>
   </Document>
 );
