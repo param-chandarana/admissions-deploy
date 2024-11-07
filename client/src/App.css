@@ -270,3 +270,7 @@ tr, td, th{
     background-color: rgba(255, 255, 255, 0.0) !important;
     border: 1px solid black;
 }
+
+.small-font {
+  font-size: 0.938rem;
+}

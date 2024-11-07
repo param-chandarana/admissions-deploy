@@ -6,10 +6,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFile } from "@fortawesome/free-solid-svg-icons";
 import OfferLetterPDF from "./OfferLetterPDF";
 
-const OfferLetterDocument = ({ studentData }) => (
-  <OfferLetterPDF studentData={studentData} />
-);
-
 const OfferLetterButton = ({ studentData }) => {
   const fileName = studentData.studentId
     .substring(studentData.studentId.length - 3)
@@ -17,7 +13,7 @@ const OfferLetterButton = ({ studentData }) => {
 
   return (
     <PDFDownloadLink
-      document={<OfferLetterDocument studentData={studentData} />}
+      document={<OfferLetterPDF studentData={studentData} />}
       fileName={`${fileName}.pdf`}
       style={{ textDecoration: "none" }}
     >

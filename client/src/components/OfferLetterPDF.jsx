@@ -1,9 +1,41 @@
 import React from "react";
-import { Page, Text, View, Document, StyleSheet } from "@react-pdf/renderer";
+import {
+  Page,
+  Text,
+  View,
+  Document,
+  StyleSheet,
+  Image,
+  Font,
+} from "@react-pdf/renderer";
+import logo from "../assets/muLogoBrown.png";
+import sign from "../assets/sign.png";
+import stamp from "../assets/stamp.png";
+import calibri from "../fonts/calibri-regular.ttf";
+import calibriBold from "../fonts/calibri-bold.ttf";
+
+Font.registerHyphenationCallback((word) => {
+  // Return entire word as unique part
+  return [word];
+});
+
+Font.register({
+  family: "Calibri",
+  fonts: [
+    {
+      src: calibriBold,
+      fontWeight: 700,
+    },
+    {
+      src: calibri,
+    },
+  ],
+});
 
 const styles = StyleSheet.create({
   page: {
-    paddingTop: 7.370079,
+    position: "relative", // Added for watermark
+    paddingTop: 17.370079,
     paddingBottom: 38.83465,
     paddingLeft: 49.6063,
     paddingRight: 40.53543,
@@ -28,6 +60,15 @@ const styles = StyleSheet.create({
     fontFamily: "Helvetica-Bold",
     textDecoration: "underline",
     lineHeight: 1.2,
+  },
+  logoContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    padding: 10,
+  },
+  logo: {
+    width: 150,
   },
   text: {
     textAlign: "justify",
@@ -112,6 +153,7 @@ const styles = StyleSheet.create({
   tableCellBankDetails: {
     textAlign: "left",
     fontSize: 10,
+    fontFamily: "Calibri",
     fontWeight: 700,
   },
   tableCol: {
@@ -152,17 +194,41 @@ const styles = StyleSheet.create({
     fontSize: 9,
   },
   firstTableCell: {
+    fontFamily: "Calibri",
     textAlign: "left",
     fontSize: 11,
   },
+  signStampContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "65%",
+  },
+  sign: {
+    width: 70,
+  },
+  stamp: {
+    width: 74,
+  },
   footer: {
-    fontSize: 10,
-    marginTop: 10,
+    position: "absolute",
+    bottom: 38.83465,
+    right: 40.53543,
+    fontFamily: "Times-Roman",
+    fontSize: 12,
   },
   textBold: {
     fontWeight: 700,
     textAlign: "justify",
     fontFamily: "Helvetica-Bold",
+    wordBreak: "normal",
+    hyphens: "none",
+    lineHeight: 1.2,
+  },
+  textBoldFirstLine: {
+    fontWeight: 700,
+    textAlign: "justify",
+    fontFamily: "Calibri",
     wordBreak: "normal",
     hyphens: "none",
     lineHeight: 1.2,
@@ -179,23 +245,46 @@ const styles = StyleSheet.create({
   marginBottom: {
     marginBottom: 10,
   },
+
+  waterMark: {
+    position: "absolute",
+    fontSize: 54,
+    fontFamily: "Times-Roman",
+    bottom: "41%",
+    left: "-1%",
+    opacity: 0.11,
+    transform: "translate(1%, -41%) rotate(-50deg) scale(1.15)",
+    whiteSpace: "nowrap",
+  },
 });
 
 const OfferLetterDocument = ({ studentData }) => (
   <Document>
     {/* Page 1 */}
     <Page size="A4" style={styles.page}>
+      {/* Watermark */}
+      <View style={styles.waterMark}>
+        <Text>Not Valid for VISA Purpose</Text>
+      </View>
+      {/* MU Logo */}
+      <View style={styles.logoContainer}>
+        <Image src={logo} style={styles.logo} />
+      </View>
+      <Text style={styles.marginBottom}></Text>
       {/* Header */}
       <View style={styles.table}>
         <View style={styles.tableRow}>
           <View style={styles.firstTableColLeft}>
             <Text style={styles.firstTableCell}>
-              <Text style={styles.textBold}>Ref: {studentData.studentId}</Text>
+              <Text style={styles.textBoldFirstLine}>
+                Ref: {studentData.studentId}
+              </Text>
             </Text>
           </View>
           <View style={styles.firstTableColRight}>
             <Text style={styles.firstTableCell}>
-              <Text style={styles.textBold}>Date:</Text> 21st February, 2024
+              <Text style={styles.textBoldFirstLine}>Date:</Text> 21st February,
+              2024
             </Text>
           </View>
         </View>
@@ -569,10 +658,21 @@ const OfferLetterDocument = ({ studentData }) => (
           </View>
         </View>
       </View>
+      <View style={styles.footer}>
+        <Text>Page 1 of 2</Text>
+      </View>
     </Page>
 
     {/* Page 2 */}
     <Page size="A4" style={styles.page}>
+      {/* Watermark */}
+      <View style={styles.waterMark}>
+        <Text>Not Valid for VISA Purpose</Text>
+      </View>
+      <View style={styles.logoContainer}>
+        <Image src={logo} style={styles.logo} />
+      </View>
+      <Text style={styles.marginBottom}></Text>
       {/* Bank Details */}
       <Text style={styles.sectionUnderline}>Bank Details:</Text>
       <Text style={styles.marginBottom}></Text>
@@ -822,8 +922,18 @@ const OfferLetterDocument = ({ studentData }) => (
       <Text style={styles.marginBottom}></Text>
       <Text>Best Wishes</Text>
       <Text style={styles.marginBottom}></Text>
-      <Text style={styles.textBold}>International Admissions,</Text>
-      <Text style={styles.textBold}>Marwadi University</Text>
+      <View style={styles.signStampContainer}>
+        <View>
+          <Image src={sign} style={styles.sign} />
+          <Text style={styles.marginBottom}></Text>
+          <Text style={styles.textBold}>International Admissions,</Text>
+          <Text style={styles.textBold}>Marwadi University</Text>
+        </View>
+        <Image src={stamp} style={styles.stamp} />
+      </View>
+      <View style={styles.footer}>
+        <Text>Page 2 of 2</Text>
+      </View>
     </Page>
   </Document>
 );

@@ -12,7 +12,7 @@ const getAllStudents = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-}
+};
 
 // Get filtered students with pagination
 const getPaginatedStudents = async (req, res) => {
@@ -25,7 +25,9 @@ const getPaginatedStudents = async (req, res) => {
   }
   if (req.query.qualification) {
     // Decode the query parameter to handle URL-encoded values
-    const qualifications = decodeURIComponent(req.query.qualification).split(",");
+    const qualifications = decodeURIComponent(req.query.qualification).split(
+      ","
+    );
     filterQuery.qualification = { $in: qualifications };
   }
   if (req.query.courseOfStudy) {
@@ -34,12 +36,12 @@ const getPaginatedStudents = async (req, res) => {
   if (req.query.duration) {
     filterQuery.duration = { $in: req.query.duration.split(",") };
   }
-  if (req.query.academicYear) {
-    const academicYearPattern = new RegExp("\\b" + `${req.query.academicYear}` + "\\b");
-    filterQuery.studentId = { $regex: academicYearPattern };
-  }
+  // if (req.query.academicYear) {
+  //   const academicYearPattern = new RegExp("\\b" + `${req.query.academicYear}` + "\\b");
+  //   filterQuery.studentId = { $regex: academicYearPattern };
+  // }
   if (req.query.search) {
-    filterQuery.studentName = { $regex: new RegExp(req.query.search, 'i') };
+    filterQuery.studentName = { $regex: new RegExp(req.query.search, "i") };
   }
 
   try {
@@ -137,12 +139,14 @@ const getHighestStudentId = async (req, res) => {
 // Function to handle the request for downloading the student data as an Excel file
 const downloadExcel = async (req, res) => {
   const filterQuery = {};
-  
+
   if (req.query.countryName) {
     filterQuery.countryName = { $in: req.query.countryName.split(",") };
   }
   if (req.query.qualification) {
-    const qualifications = decodeURIComponent(req.query.qualification).split(",");
+    const qualifications = decodeURIComponent(req.query.qualification).split(
+      ","
+    );
     filterQuery.qualification = { $in: qualifications };
   }
   if (req.query.courseOfStudy) {
@@ -151,12 +155,12 @@ const downloadExcel = async (req, res) => {
   if (req.query.duration) {
     filterQuery.duration = { $in: req.query.duration.split(",") };
   }
-  if (req.query.academicYear) {
-    const academicYearPattern = new RegExp("\\b" + `${req.query.academicYear}` + "\\b");
-    filterQuery.studentId = { $regex: academicYearPattern };
-  }
+  // if (req.query.academicYear) {
+  //   const academicYearPattern = new RegExp("\\b" + `${req.query.academicYear}` + "\\b");
+  //   filterQuery.studentId = { $regex: academicYearPattern };
+  // }
   if (req.query.search) {
-    filterQuery.studentName = { $regex: new RegExp(req.query.search, 'i') };
+    filterQuery.studentName = { $regex: new RegExp(req.query.search, "i") };
   }
 
   try {
@@ -167,14 +171,16 @@ const downloadExcel = async (req, res) => {
         "Student ID": student.studentId,
         "Student Name": student.studentName,
         "Country Name": student.countryName,
-        "Qualification": student.qualification,
+        Qualification: student.qualification,
         "Course of Study": student.courseOfStudy,
-        "Duration": student.duration,
+        Duration: student.duration,
         "Total Annual Tuition Fee": student.totalAnnualTuitionFee,
         "Hostel, Mess, and Other Fees": student.hostelMessAndOtherFees,
         "Total Annual Fees": student.totalAnnualFees,
-        "Special Scholarship from Institute": student.specialScholarshipFromInstitute,
-        "MU President's Special Scholarship": student.MUPresidentsSpecialScholarship,
+        "Special Scholarship from Institute":
+          student.specialScholarshipFromInstitute,
+        "MU President's Special Scholarship":
+          student.MUPresidentsSpecialScholarship,
         "Net Annual Fee Payable": student.netAnnualFeePayable,
       };
     });
@@ -189,12 +195,16 @@ const downloadExcel = async (req, res) => {
     XLXS.utils.book_append_sheet(workbook, worksheet, "Students");
 
     // Write the workbook to a buffer
-    const excelBuffer = XLXS.write(workbook, { type: "buffer", bookType: "xlsx" });
+    const excelBuffer = XLXS.write(workbook, {
+      type: "buffer",
+      bookType: "xlsx",
+    });
 
     // Set the response headers
     res.set({
       "Content-Disposition": "attachment; filename=Students.xlsx",
-      "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "Content-Type":
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     });
 
     // Send the buffer as the response
@@ -213,5 +223,5 @@ module.exports = {
   updateStudentById,
   deleteStudentById,
   getHighestStudentId,
-  downloadExcel
+  downloadExcel,
 };

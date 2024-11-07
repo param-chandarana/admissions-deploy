@@ -161,7 +161,7 @@ const CourseDetails = () => {
 
   useEffect(() => {
     if (visibleCount === 0 && filteredCount !== 0) {
-    setPageNumber(Math.max(0, pageNumber - 1));
+      setPageNumber(Math.max(0, pageNumber - 1));
     }
   }, [visibleCount]);
 
@@ -194,7 +194,7 @@ const CourseDetails = () => {
             ></button>
           </div>
           <div className="offcanvas-body">
-          <div className="input-group form-control mb-3 search-container p-0 d-flex align-items-top">
+            <div className="input-group form-control mb-3 search-container p-0 d-flex align-items-top">
               <input
                 type="search"
                 className="form-control search-bar"
@@ -232,25 +232,30 @@ const CourseDetails = () => {
                 />
               </button>
               <div
-                className={`collapse${showQualificationCollapse ? " show" : ""
-                  } mb-3`}
+                className={`collapse${
+                  showQualificationCollapse ? " show" : ""
+                } mb-3`}
                 id="qualificationCollapse"
               >
-                {filterData.qualifications?.sort().map((qualification, index) => (
-                  <div key={index}>
-                    <input
-                      type="checkbox"
-                      className="form-check-input me-2"
-                      id={qualification}
-                      value={qualification}
-                      checked={filters.qualification.includes(qualification)}
-                      onChange={() =>
-                        handleFilterChange("qualification", qualification)
-                      }
-                    />
-                    <label htmlFor={qualification}>{qualification}</label>
-                  </div>
-                ))}
+                {filterData.qualifications
+                  ?.sort()
+                  .map((qualification, index) => (
+                    <div key={index}>
+                      <input
+                        type="checkbox"
+                        className="form-check-input me-2"
+                        id={qualification}
+                        value={qualification}
+                        checked={filters.qualification.includes(qualification)}
+                        onChange={() =>
+                          handleFilterChange("qualification", qualification)
+                        }
+                      />
+                      <label htmlFor={qualification} className="small-font">
+                        {qualification}
+                      </label>
+                    </div>
+                  ))}
               </div>
             </div>
             <div>
@@ -266,8 +271,9 @@ const CourseDetails = () => {
                 />
               </button>
               <div
-                className={`collapse${showDurationCollapse ? " show" : ""
-                  } mb-3`}
+                className={`collapse${
+                  showDurationCollapse ? " show" : ""
+                } mb-3`}
                 id="durationCollapse"
               >
                 {filterData.durations?.sort().map((duration, index) => (
@@ -282,7 +288,9 @@ const CourseDetails = () => {
                         handleFilterChange("duration", duration.toString())
                       }
                     />
-                    <label htmlFor={duration}>{duration}</label>
+                    <label htmlFor={duration} className="small-font">
+                      {duration}
+                    </label>
                   </div>
                 ))}
               </div>
@@ -302,11 +310,7 @@ const CourseDetails = () => {
                       Course Name{" "}
                       {sortColumn === "courseName" ? (
                         <FontAwesomeIcon
-                          icon={
-                            sortDirection === "asc"
-                              ? faSortUp
-                              : faSortDown
-                          }
+                          icon={sortDirection === "asc" ? faSortUp : faSortDown}
                           className="ms-1 small"
                         />
                       ) : (
@@ -317,26 +321,22 @@ const CourseDetails = () => {
                       Qualification{" "}
                       {sortColumn === "qualification" ? (
                         <FontAwesomeIcon
-                          icon={
-                            sortDirection === "asc"
-                              ? faSortUp
-                              : faSortDown
-                          }
+                          icon={sortDirection === "asc" ? faSortUp : faSortDown}
                           className="ms-1 small"
                         />
                       ) : (
                         <FontAwesomeIcon icon={faSort} className="ms-1 small" />
                       )}
                     </th>
-                    <th onClick={() => handleSort("duration")} data-bs-toggle="tooltip" title="Sort">
+                    <th
+                      onClick={() => handleSort("duration")}
+                      data-bs-toggle="tooltip"
+                      title="Sort"
+                    >
                       Duration (in Years){" "}
                       {sortColumn === "duration" ? (
                         <FontAwesomeIcon
-                          icon={
-                            sortDirection === "asc"
-                              ? faSortUp
-                              : faSortDown
-                          }
+                          icon={sortDirection === "asc" ? faSortUp : faSortDown}
                           className="ms-1 small"
                         />
                       ) : (
@@ -347,11 +347,7 @@ const CourseDetails = () => {
                       Total Annual Tuition Fee{" "}
                       {sortColumn === "totalAnnualTuitionFee" ? (
                         <FontAwesomeIcon
-                          icon={
-                            sortDirection === "asc"
-                              ? faSortUp
-                              : faSortDown
-                          }
+                          icon={sortDirection === "asc" ? faSortUp : faSortDown}
                           className="ms-1 small"
                         />
                       ) : (
@@ -362,11 +358,7 @@ const CourseDetails = () => {
                       Hostel, Mess and Other Fees{" "}
                       {sortColumn === "hostelMessAndOtherFees" ? (
                         <FontAwesomeIcon
-                          icon={
-                            sortDirection === "asc"
-                              ? faSortUp
-                              : faSortDown
-                          }
+                          icon={sortDirection === "asc" ? faSortUp : faSortDown}
                           className="ms-1 small"
                         />
                       ) : (
@@ -377,11 +369,7 @@ const CourseDetails = () => {
                       Total Annual Fees{" "}
                       {sortColumn === "totalAnnualFees" ? (
                         <FontAwesomeIcon
-                          icon={
-                            sortDirection === "asc"
-                              ? faSortUp
-                              : faSortDown
-                          }
+                          icon={sortDirection === "asc" ? faSortUp : faSortDown}
                           className="ms-1 small"
                         />
                       ) : (
@@ -396,11 +384,7 @@ const CourseDetails = () => {
                       Special Scholarship from Institute{" "}
                       {sortColumn === "specialScholarshipFromInstitute" ? (
                         <FontAwesomeIcon
-                          icon={
-                            sortDirection === "asc"
-                              ? faSortUp
-                              : faSortDown
-                          }
+                          icon={sortDirection === "asc" ? faSortUp : faSortDown}
                           className="ms-1 small"
                         />
                       ) : (
@@ -415,11 +399,7 @@ const CourseDetails = () => {
                       MU President's Special Scholarship{" "}
                       {sortColumn === "MUPresidentsSpecialScholarship" ? (
                         <FontAwesomeIcon
-                          icon={
-                            sortDirection === "asc"
-                              ? faSortUp
-                              : faSortDown
-                          }
+                          icon={sortDirection === "asc" ? faSortUp : faSortDown}
                           className="ms-1 small"
                         />
                       ) : (
@@ -483,8 +463,7 @@ const CourseDetails = () => {
                           No courses found
                         </td>
                       </tr>
-                    )
-                    }
+                    )}
                   </tbody>
                 )}
               </table>
@@ -494,8 +473,9 @@ const CourseDetails = () => {
                 <nav aria-label="Pagination">
                   <ul className="pagination">
                     <li
-                      className={`page-item ${pageNumber === 0 ? "disabled" : ""
-                        }`}
+                      className={`page-item ${
+                        pageNumber === 0 ? "disabled" : ""
+                      }`}
                     >
                       <button className="page-link" onClick={gotoPrevious}>
                         Previous
@@ -504,8 +484,9 @@ const CourseDetails = () => {
                     {Array.from({ length: numberOfPages }, (_, index) => (
                       <li
                         key={index}
-                        className={`page-item ${pageNumber === index ? "active" : ""
-                          }`}
+                        className={`page-item ${
+                          pageNumber === index ? "active" : ""
+                        }`}
                       >
                         <button
                           className="page-link"
@@ -516,8 +497,9 @@ const CourseDetails = () => {
                       </li>
                     ))}
                     <li
-                      className={`page-item ${pageNumber >= numberOfPages - 1 ? "disabled" : ""
-                        }`}
+                      className={`page-item ${
+                        pageNumber >= numberOfPages - 1 ? "disabled" : ""
+                      }`}
                     >
                       <button className="page-link" onClick={gotoNext}>
                         Next

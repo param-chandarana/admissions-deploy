@@ -22,7 +22,7 @@ const StudentDetails = () => {
     qualification: [],
     courseOfStudy: [],
     duration: [],
-    academicYear: [],
+    // academicYear: [],
   });
   const [filterData, setFilterData] = useState({});
   const [countryNames, setCountryNames] = useState([]);
@@ -36,8 +36,8 @@ const StudentDetails = () => {
   const [showDurationCollapse, setShowDurationCollapse] = useState(false);
   const [showCountryCollapse, setShowCountryCollapse] = useState(false);
   const [showCourseCollapse, setShowCourseCollapse] = useState(false);
-  const [showAcademicYearCollapse, setShowAcademicYearCollapse] =
-    useState(false);
+  // const [showAcademicYearCollapse, setShowAcademicYearCollapse] =
+  //   useState(false);
   const [pageNumber, setPageNumber] = useState(0);
   const [numberOfPages, setNumberOfPages] = useState(0);
   const [sortColumn, setSortColumn] = useState(null);
@@ -64,7 +64,7 @@ const StudentDetails = () => {
             qualification: filters.qualification.join(","),
             courseOfStudy: filters.courseOfStudy.join(","),
             duration: filters.duration.join(","),
-            academicYear: filters.academicYear.join(","),
+            // academicYear: filters.academicYear.join(","),
             search: searchQuery,
           };
 
@@ -152,7 +152,7 @@ const StudentDetails = () => {
       qualification: [],
       courseOfStudy: [],
       duration: [],
-      academicYear: [],
+      // academicYear: [],
     });
     setSearchQuery("");
     if (!isLoading) {
@@ -177,23 +177,6 @@ const StudentDetails = () => {
     const match = studentId.match(/\/(\d{4}-\d{2})\//);
     return match ? match[1] : "";
   };
-
-  // const filteredStudents = studentData.filter((student) => {
-  //   const academicYear = getAcademicYear(student.studentId);
-  //   return (
-  //     (filters.countryName.length === 0 ||
-  //       filters.countryName.includes(student.countryName)) &&
-  //     (filters.qualification.length === 0 ||
-  //       filters.qualification.includes(student.qualification)) &&
-  //     (filters.courseOfStudy.length === 0 ||
-  //       filters.courseOfStudy.includes(student.courseOfStudy)) &&
-  //     (filters.duration.length === 0 ||
-  //       filters.duration.includes(student.duration.toString())) &&
-  //     (filters.academicYear.length === 0 ||
-  //       filters.academicYear.includes(academicYear)) &&
-  //     student.studentName.toLowerCase().includes(searchQuery.toLowerCase())
-  //   );
-  // });
 
   const handleSort = (column) => {
     if (sortColumn === column) {
@@ -221,11 +204,10 @@ const StudentDetails = () => {
 
   useEffect(() => {
     if (visibleCount === 0 && filteredCount !== 0) {
-    setPageNumber(Math.max(0, pageNumber - 1));
+      setPageNumber(Math.max(0, pageNumber - 1));
     }
   }, [visibleCount]);
 
-  // aane as component kri leje
   const handleDownload = () => {
     const filterParams = {
       page: pageNumber,
@@ -233,7 +215,7 @@ const StudentDetails = () => {
       qualification: filters.qualification.join(","),
       courseOfStudy: filters.courseOfStudy.join(","),
       duration: filters.duration.join(","),
-      academicYear: filters.academicYear.join(","),
+      // academicYear: filters.academicYear.join(","),
       search: searchQuery,
     };
 
@@ -243,20 +225,22 @@ const StudentDetails = () => {
     }
 
     axios({
-      url: '/api/students/download-excel', // Adjust the URL to your API endpoint
-      method: 'GET',
+      url: "/api/students/download-excel", // Adjust the URL to your API endpoint
+      method: "GET",
       params: filterParams,
-      responseType: 'blob' // Important for handling binary data
-    }).then((response) => {
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', 'Students.xlsx');
-      document.body.appendChild(link);
-      link.click();
-    }).catch((error) => {
-      console.error('Error downloading file:', error);
-    });
+      responseType: "blob", // Important for handling binary data
+    })
+      .then((response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "Students.xlsx");
+        document.body.appendChild(link);
+        link.click();
+      })
+      .catch((error) => {
+        console.error("Error downloading file:", error);
+      });
   };
 
   return (
@@ -273,10 +257,7 @@ const StudentDetails = () => {
             Show Filters
           </button>
 
-          <button
-            className="btn"
-            type="button"
-            onClick={handleDownload}>
+          <button className="btn" type="button" onClick={handleDownload}>
             Download List
           </button>
         </div>
@@ -347,7 +328,9 @@ const StudentDetails = () => {
                         handleFilterChange("countryName", countryName)
                       }
                     />
-                    <label htmlFor={countryName}>{countryName}</label>
+                    <label htmlFor={countryName} className="small-font">
+                      {countryName}
+                    </label>
                   </div>
                 ))}
               </div>
@@ -370,25 +353,30 @@ const StudentDetails = () => {
                 />
               </button>
               <div
-                className={`collapse${showQualificationCollapse ? " show" : ""
-                  } mb-3`}
+                className={`collapse${
+                  showQualificationCollapse ? " show" : ""
+                } mb-3`}
                 id="qualificationCollapse"
               >
-                {filterData.qualifications?.sort().map((qualification, index) => (
-                  <div key={index}>
-                    <input
-                      type="checkbox"
-                      className="form-check-input me-2"
-                      id={qualification}
-                      value={qualification}
-                      checked={filters.qualification.includes(qualification)}
-                      onChange={() =>
-                        handleFilterChange("qualification", qualification)
-                      }
-                    />
-                    <label htmlFor={qualification}>{qualification}</label>
-                  </div>
-                ))}
+                {filterData.qualifications
+                  ?.sort()
+                  .map((qualification, index) => (
+                    <div key={index}>
+                      <input
+                        type="checkbox"
+                        className="form-check-input me-2"
+                        id={qualification}
+                        value={qualification}
+                        checked={filters.qualification.includes(qualification)}
+                        onChange={() =>
+                          handleFilterChange("qualification", qualification)
+                        }
+                      />
+                      <label htmlFor={qualification} className="small-font">
+                        {qualification}
+                      </label>
+                    </div>
+                  ))}
               </div>
             </div>
             {/* Course of Study Filter */}
@@ -420,7 +408,9 @@ const StudentDetails = () => {
                         handleFilterChange("courseOfStudy", courseOfStudy)
                       }
                     />
-                    <label htmlFor={courseOfStudy}>{courseOfStudy}</label>
+                    <label htmlFor={courseOfStudy} className="small-font">
+                      {courseOfStudy}
+                    </label>
                   </div>
                 ))}
               </div>
@@ -439,8 +429,9 @@ const StudentDetails = () => {
                 />
               </button>
               <div
-                className={`collapse${showDurationCollapse ? " show" : ""
-                  } mb-3`}
+                className={`collapse${
+                  showDurationCollapse ? " show" : ""
+                } mb-3`}
                 id="durationCollapse"
               >
                 {filterData.durations?.sort().map((duration, index) => (
@@ -455,13 +446,15 @@ const StudentDetails = () => {
                         handleFilterChange("duration", duration.toString())
                       }
                     />
-                    <label htmlFor={duration}>{duration}</label>
+                    <label htmlFor={duration} className="small-font">
+                      {duration}
+                    </label>
                   </div>
                 ))}
               </div>
             </div>
             {/* Academic Year Filter */}
-            <div>
+            {/* <div>
               <button
                 className="btn-filter-category text-decoration-none d-flex justify-content-between align-items-center"
                 type="button"
@@ -500,11 +493,11 @@ const StudentDetails = () => {
                         handleFilterChange("academicYear", academicYear)
                       }
                     />
-                    <label htmlFor={academicYear}>{academicYear}</label>
+                    <label htmlFor={academicYear} className="small-font">{academicYear}</label>
                   </div>
                 ))}
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
         <div className="row">
@@ -716,8 +709,9 @@ const StudentDetails = () => {
                 <nav aria-label="Pagination">
                   <ul className="pagination">
                     <li
-                      className={`page-item ${pageNumber === 0 ? "disabled" : ""
-                        }`}
+                      className={`page-item ${
+                        pageNumber === 0 ? "disabled" : ""
+                      }`}
                     >
                       <button className="page-link" onClick={gotoPrevious}>
                         Previous
@@ -726,8 +720,9 @@ const StudentDetails = () => {
                     {pages.map((pageIndex) => (
                       <li
                         key={pageIndex}
-                        className={`page-item ${pageNumber === pageIndex ? "active" : ""
-                          }`}
+                        className={`page-item ${
+                          pageNumber === pageIndex ? "active" : ""
+                        }`}
                       >
                         <button
                           className="page-link"
@@ -739,8 +734,9 @@ const StudentDetails = () => {
                       </li>
                     ))}
                     <li
-                      className={`page-item ${pageNumber >= numberOfPages - 1 ? "disabled" : ""
-                        }`}
+                      className={`page-item ${
+                        pageNumber >= numberOfPages - 1 ? "disabled" : ""
+                      }`}
                     >
                       <button className="page-link" onClick={gotoNext}>
                         Next
