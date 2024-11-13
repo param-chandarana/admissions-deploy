@@ -40,8 +40,10 @@ const StudentDetails = () => {
   //   useState(false);
   const [pageNumber, setPageNumber] = useState(0);
   const [numberOfPages, setNumberOfPages] = useState(0);
-  const [sortColumn, setSortColumn] = useState(null);
-  const [sortDirection, setSortDirection] = useState("asc");
+  // const [sortColumn, setSortColumn] = useState(null);
+  // const [sortDirection, setSortDirection] = useState("asc");
+  const [sortField, setSortField] = useState("studentId"); // Default sort by studentId
+  const [sortOrder, setSortOrder] = useState("asc"); // Default sort order ascending
   const [isLoading, setIsLoading] = useState(false);
 
   const pages = new Array(numberOfPages).fill(null).map((v, i) => i);
@@ -51,6 +53,53 @@ const StudentDetails = () => {
     courses: true,
     countries: true,
   });
+
+  // useEffect(() => {
+  //   if (initialFetchRef.current.students) {
+  //     initialFetchRef.current.students = false;
+  //     const fetchData = async () => {
+  //       setIsLoading(true);
+  //       try {
+  //         const filterParams = {
+  //           page: pageNumber,
+  //           countryName: filters.countryName.join(","),
+  //           qualification: filters.qualification.join(","),
+  //           courseOfStudy: filters.courseOfStudy.join(","),
+  //           duration: filters.duration.join(","),
+  //           // academicYear: filters.academicYear.join(","),
+  //           search: searchQuery,
+  //         };
+
+  //         const response = await axios.get(
+  //           `/api/students/get?page=${pageNumber}`,
+  //           {
+  //             params: filterParams,
+  //           }
+  //         );
+  //         setStudentData(response.data.students);
+  //         setTotalCount(response.data.totalStudents);
+  //         setFilteredCount(response.data.filteredStudents);
+  //         setNumberOfPages(response.data.totalPages);
+  //         initialFetchRef.current.students = true;
+  //       } catch (error) {
+  //         toast.error("Error fetching students");
+  //       } finally {
+  //         setIsLoading(false);
+  //       }
+  //     };
+
+  //     fetchData();
+  //   }
+  // }, [pageNumber, filters, searchQuery]);
+
+  const handleSort = (field) => {
+    if (sortField === field) {
+      setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
+    } else {
+      setSortField(field);
+      setSortOrder("asc");
+    }
+  };
 
   useEffect(() => {
     if (initialFetchRef.current.students) {
@@ -64,16 +113,15 @@ const StudentDetails = () => {
             qualification: filters.qualification.join(","),
             courseOfStudy: filters.courseOfStudy.join(","),
             duration: filters.duration.join(","),
-            // academicYear: filters.academicYear.join(","),
             search: searchQuery,
+            sortField: sortField || "studentId", // Default sort field
+            sortOrder: sortOrder || "asc", // Default sort order
           };
 
-          const response = await axios.get(
-            `/api/students/get?page=${pageNumber}`,
-            {
-              params: filterParams,
-            }
-          );
+          const response = await axios.get(`/api/students/get`, {
+            params: filterParams,
+          });
+
           setStudentData(response.data.students);
           setTotalCount(response.data.totalStudents);
           setFilteredCount(response.data.filteredStudents);
@@ -88,7 +136,7 @@ const StudentDetails = () => {
 
       fetchData();
     }
-  }, [pageNumber, filters, searchQuery]);
+  }, [pageNumber, filters, searchQuery, sortField, sortOrder]);
 
   useEffect(() => {
     if (initialFetchRef.current.courses) {
@@ -178,29 +226,29 @@ const StudentDetails = () => {
     return match ? match[1] : "";
   };
 
-  const handleSort = (column) => {
-    if (sortColumn === column) {
-      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
-    } else {
-      setSortColumn(column);
-      setSortDirection("asc");
-    }
-  };
+  // const handleSort = (column) => {
+  //   if (sortColumn === column) {
+  //     setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+  //   } else {
+  //     setSortColumn(column);
+  //     setSortDirection("asc");
+  //   }
+  // };
 
-  const sortedStudents = [...studentData].sort((a, b) => {
-    const columnA = sortColumn ? a[sortColumn] : null;
-    const columnB = sortColumn ? b[sortColumn] : null;
+  // const sortedStudents = [...studentData].sort((a, b) => {
+  //   const columnA = sortColumn ? a[sortColumn] : null;
+  //   const columnB = sortColumn ? b[sortColumn] : null;
 
-    if (typeof columnA === "string" && typeof columnB === "string") {
-      const comparison = columnA.localeCompare(columnB);
-      return sortDirection === "asc" ? comparison : -comparison;
-    } else {
-      const comparison = columnA > columnB ? 1 : columnA < columnB ? -1 : 0;
-      return sortDirection === "asc" ? comparison : -comparison;
-    }
-  });
+  //   if (typeof columnA === "string" && typeof columnB === "string") {
+  //     const comparison = columnA.localeCompare(columnB);
+  //     return sortDirection === "asc" ? comparison : -comparison;
+  //   } else {
+  //     const comparison = columnA > columnB ? 1 : columnA < columnB ? -1 : 0;
+  //     return sortDirection === "asc" ? comparison : -comparison;
+  //   }
+  // });
 
-  const visibleCount = sortedStudents.length;
+  const visibleCount = studentData.length;
 
   useEffect(() => {
     if (visibleCount === 0 && filteredCount !== 0) {
@@ -215,8 +263,9 @@ const StudentDetails = () => {
       qualification: filters.qualification.join(","),
       courseOfStudy: filters.courseOfStudy.join(","),
       duration: filters.duration.join(","),
-      // academicYear: filters.academicYear.join(","),
       search: searchQuery,
+      sortField: sortField || "studentId",
+      sortOrder: sortOrder || "asc",
     };
 
     if (filteredCount === 0) {
@@ -225,10 +274,10 @@ const StudentDetails = () => {
     }
 
     axios({
-      url: "/api/students/download-excel", // Adjust the URL to your API endpoint
+      url: "/api/students/download-excel",
       method: "GET",
       params: filterParams,
-      responseType: "blob", // Important for handling binary data
+      responseType: "blob",
     })
       .then((response) => {
         const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -237,8 +286,10 @@ const StudentDetails = () => {
         link.setAttribute("download", "Students.xlsx");
         document.body.appendChild(link);
         link.click();
+        toast.success("File downloaded successfully");
       })
       .catch((error) => {
+        toast.error("Error downloading file");
         console.error("Error downloading file:", error);
       });
   };
@@ -510,10 +561,10 @@ const StudentDetails = () => {
                 <thead>
                   <tr>
                     <th onClick={() => handleSort("studentId")}>
-                      Student ID{" "}
-                      {sortColumn === "studentId" ? (
+                      Student ID
+                      {sortField === "studentId" ? (
                         <FontAwesomeIcon
-                          icon={sortDirection === "asc" ? faSortUp : faSortDown}
+                          icon={sortOrder === "asc" ? faSortUp : faSortDown}
                           className="ms-1 small"
                         />
                       ) : (
@@ -521,10 +572,10 @@ const StudentDetails = () => {
                       )}
                     </th>
                     <th onClick={() => handleSort("studentName")}>
-                      Student Name{" "}
-                      {sortColumn === "studentName" ? (
+                      Student Name
+                      {sortField === "studentName" ? (
                         <FontAwesomeIcon
-                          icon={sortDirection === "asc" ? faSortUp : faSortDown}
+                          icon={sortOrder === "asc" ? faSortUp : faSortDown}
                           className="ms-1 small"
                         />
                       ) : (
@@ -532,10 +583,10 @@ const StudentDetails = () => {
                       )}
                     </th>
                     <th onClick={() => handleSort("countryName")}>
-                      Country{" "}
-                      {sortColumn === "countryName" ? (
+                      Country
+                      {sortField === "countryName" ? (
                         <FontAwesomeIcon
-                          icon={sortDirection === "asc" ? faSortUp : faSortDown}
+                          icon={sortOrder === "asc" ? faSortUp : faSortDown}
                           className="ms-1 small"
                         />
                       ) : (
@@ -543,10 +594,10 @@ const StudentDetails = () => {
                       )}
                     </th>
                     <th onClick={() => handleSort("qualification")}>
-                      Qualification{" "}
-                      {sortColumn === "qualification" ? (
+                      Qualification
+                      {sortField === "qualification" ? (
                         <FontAwesomeIcon
-                          icon={sortDirection === "asc" ? faSortUp : faSortDown}
+                          icon={sortOrder === "asc" ? faSortUp : faSortDown}
                           className="ms-1 small"
                         />
                       ) : (
@@ -554,10 +605,10 @@ const StudentDetails = () => {
                       )}
                     </th>
                     <th onClick={() => handleSort("courseOfStudy")}>
-                      Course Of Study{" "}
-                      {sortColumn === "courseOfStudy" ? (
+                      Course Of Study
+                      {sortField === "courseOfStudy" ? (
                         <FontAwesomeIcon
-                          icon={sortDirection === "asc" ? faSortUp : faSortDown}
+                          icon={sortOrder === "asc" ? faSortUp : faSortDown}
                           className="ms-1 small"
                         />
                       ) : (
@@ -565,10 +616,10 @@ const StudentDetails = () => {
                       )}
                     </th>
                     <th onClick={() => handleSort("duration")}>
-                      Duration (in Years){" "}
-                      {sortColumn === "duration" ? (
+                      Duration (in Years)
+                      {sortField === "duration" ? (
                         <FontAwesomeIcon
-                          icon={sortDirection === "asc" ? faSortUp : faSortDown}
+                          icon={sortOrder === "asc" ? faSortUp : faSortDown}
                           className="ms-1 small"
                         />
                       ) : (
@@ -576,10 +627,10 @@ const StudentDetails = () => {
                       )}
                     </th>
                     <th onClick={() => handleSort("totalAnnualTuitionFee")}>
-                      Total Annual Tuition Fee{" "}
-                      {sortColumn === "totalAnnualTuitionFee" ? (
+                      Total Annual Tuition Fee
+                      {sortField === "totalAnnualTuitionFee" ? (
                         <FontAwesomeIcon
-                          icon={sortDirection === "asc" ? faSortUp : faSortDown}
+                          icon={sortOrder === "asc" ? faSortUp : faSortDown}
                           className="ms-1 small"
                         />
                       ) : (
@@ -587,10 +638,10 @@ const StudentDetails = () => {
                       )}
                     </th>
                     <th onClick={() => handleSort("hostelMessAndOtherFees")}>
-                      Hostel, Mess and Other Fees{" "}
-                      {sortColumn === "hostelMessAndOtherFees" ? (
+                      Hostel, Mess and Other Fees
+                      {sortField === "hostelMessAndOtherFees" ? (
                         <FontAwesomeIcon
-                          icon={sortDirection === "asc" ? faSortUp : faSortDown}
+                          icon={sortOrder === "asc" ? faSortUp : faSortDown}
                           className="ms-1 small"
                         />
                       ) : (
@@ -598,10 +649,10 @@ const StudentDetails = () => {
                       )}
                     </th>
                     <th onClick={() => handleSort("totalAnnualFees")}>
-                      Total Annual Fees{" "}
-                      {sortColumn === "totalAnnualFees" ? (
+                      Total Annual Fees
+                      {sortField === "totalAnnualFees" ? (
                         <FontAwesomeIcon
-                          icon={sortDirection === "asc" ? faSortUp : faSortDown}
+                          icon={sortOrder === "asc" ? faSortUp : faSortDown}
                           className="ms-1 small"
                         />
                       ) : (
@@ -610,13 +661,13 @@ const StudentDetails = () => {
                     </th>
                     <th
                       onClick={() =>
-                        handleSort("specialScholarShipFromInstitute")
+                        handleSort("specialScholarshipFromInstitute")
                       }
                     >
-                      Special Scholarship from Institute{" "}
-                      {sortColumn === "specialScholarshipFromInstitute" ? (
+                      Special Scholarship
+                      {sortField === "specialScholarshipFromInstitute" ? (
                         <FontAwesomeIcon
-                          icon={sortDirection === "asc" ? faSortUp : faSortDown}
+                          icon={sortOrder === "asc" ? faSortUp : faSortDown}
                           className="ms-1 small"
                         />
                       ) : (
@@ -628,10 +679,10 @@ const StudentDetails = () => {
                         handleSort("MUPresidentsSpecialScholarship")
                       }
                     >
-                      MU President's Special Scholarship{" "}
-                      {sortColumn === "MUPresidentsSpecialScholarship" ? (
+                      MU President's Scholarship
+                      {sortField === "MUPresidentsSpecialScholarship" ? (
                         <FontAwesomeIcon
-                          icon={sortDirection === "asc" ? faSortUp : faSortDown}
+                          icon={sortOrder === "asc" ? faSortUp : faSortDown}
                           className="ms-1 small"
                         />
                       ) : (
@@ -639,10 +690,10 @@ const StudentDetails = () => {
                       )}
                     </th>
                     <th onClick={() => handleSort("netAnnualFeePayable")}>
-                      Net Annual Fee Payable{" "}
-                      {sortColumn === "netAnnualFeePayable" ? (
+                      Net Annual Fee Payable
+                      {sortField === "netAnnualFeePayable" ? (
                         <FontAwesomeIcon
-                          icon={sortDirection === "asc" ? faSortUp : faSortDown}
+                          icon={sortOrder === "asc" ? faSortUp : faSortDown}
                           className="ms-1 small"
                         />
                       ) : (
@@ -662,8 +713,8 @@ const StudentDetails = () => {
                   </tbody>
                 ) : (
                   <tbody>
-                    {sortedStudents.length > 0 ? (
-                      sortedStudents.map((student, index) => (
+                    {studentData.length > 0 ? (
+                      studentData.map((student, index) => (
                         <tr key={index}>
                           <td>{student.studentId}</td>
                           <td>{student.studentName}</td>
