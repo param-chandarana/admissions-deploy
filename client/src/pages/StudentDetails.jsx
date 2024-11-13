@@ -22,7 +22,6 @@ const StudentDetails = () => {
     qualification: [],
     courseOfStudy: [],
     duration: [],
-    // academicYear: [],
   });
   const [filterData, setFilterData] = useState({});
   const [countryNames, setCountryNames] = useState([]);
@@ -36,12 +35,8 @@ const StudentDetails = () => {
   const [showDurationCollapse, setShowDurationCollapse] = useState(false);
   const [showCountryCollapse, setShowCountryCollapse] = useState(false);
   const [showCourseCollapse, setShowCourseCollapse] = useState(false);
-  // const [showAcademicYearCollapse, setShowAcademicYearCollapse] =
-  //   useState(false);
   const [pageNumber, setPageNumber] = useState(0);
   const [numberOfPages, setNumberOfPages] = useState(0);
-  // const [sortColumn, setSortColumn] = useState(null);
-  // const [sortDirection, setSortDirection] = useState("asc");
   const [sortField, setSortField] = useState("studentId"); // Default sort by studentId
   const [sortOrder, setSortOrder] = useState("asc"); // Default sort order ascending
   const [isLoading, setIsLoading] = useState(false);
@@ -53,44 +48,6 @@ const StudentDetails = () => {
     courses: true,
     countries: true,
   });
-
-  // useEffect(() => {
-  //   if (initialFetchRef.current.students) {
-  //     initialFetchRef.current.students = false;
-  //     const fetchData = async () => {
-  //       setIsLoading(true);
-  //       try {
-  //         const filterParams = {
-  //           page: pageNumber,
-  //           countryName: filters.countryName.join(","),
-  //           qualification: filters.qualification.join(","),
-  //           courseOfStudy: filters.courseOfStudy.join(","),
-  //           duration: filters.duration.join(","),
-  //           // academicYear: filters.academicYear.join(","),
-  //           search: searchQuery,
-  //         };
-
-  //         const response = await axios.get(
-  //           `/api/students/get?page=${pageNumber}`,
-  //           {
-  //             params: filterParams,
-  //           }
-  //         );
-  //         setStudentData(response.data.students);
-  //         setTotalCount(response.data.totalStudents);
-  //         setFilteredCount(response.data.filteredStudents);
-  //         setNumberOfPages(response.data.totalPages);
-  //         initialFetchRef.current.students = true;
-  //       } catch (error) {
-  //         toast.error("Error fetching students");
-  //       } finally {
-  //         setIsLoading(false);
-  //       }
-  //     };
-
-  //     fetchData();
-  //   }
-  // }, [pageNumber, filters, searchQuery]);
 
   const handleSort = (field) => {
     if (sortField === field) {
@@ -114,8 +71,8 @@ const StudentDetails = () => {
             courseOfStudy: filters.courseOfStudy.join(","),
             duration: filters.duration.join(","),
             search: searchQuery,
-            sortField: sortField || "studentId", // Default sort field
-            sortOrder: sortOrder || "asc", // Default sort order
+            sortField: sortField || "studentId",
+            sortOrder: sortOrder || "asc",
           };
 
           const response = await axios.get(`/api/students/get`, {
@@ -200,7 +157,6 @@ const StudentDetails = () => {
       qualification: [],
       courseOfStudy: [],
       duration: [],
-      // academicYear: [],
     });
     setSearchQuery("");
     if (!isLoading) {
@@ -225,28 +181,6 @@ const StudentDetails = () => {
     const match = studentId.match(/\/(\d{4}-\d{2})\//);
     return match ? match[1] : "";
   };
-
-  // const handleSort = (column) => {
-  //   if (sortColumn === column) {
-  //     setSortDirection(sortDirection === "asc" ? "desc" : "asc");
-  //   } else {
-  //     setSortColumn(column);
-  //     setSortDirection("asc");
-  //   }
-  // };
-
-  // const sortedStudents = [...studentData].sort((a, b) => {
-  //   const columnA = sortColumn ? a[sortColumn] : null;
-  //   const columnB = sortColumn ? b[sortColumn] : null;
-
-  //   if (typeof columnA === "string" && typeof columnB === "string") {
-  //     const comparison = columnA.localeCompare(columnB);
-  //     return sortDirection === "asc" ? comparison : -comparison;
-  //   } else {
-  //     const comparison = columnA > columnB ? 1 : columnA < columnB ? -1 : 0;
-  //     return sortDirection === "asc" ? comparison : -comparison;
-  //   }
-  // });
 
   const visibleCount = studentData.length;
 
@@ -504,51 +438,6 @@ const StudentDetails = () => {
                 ))}
               </div>
             </div>
-            {/* Academic Year Filter */}
-            {/* <div>
-              <button
-                className="btn-filter-category text-decoration-none d-flex justify-content-between align-items-center"
-                type="button"
-                onClick={() =>
-                  setShowAcademicYearCollapse(!showAcademicYearCollapse)
-                }
-              >
-                Academic Year
-                <FontAwesomeIcon
-                  icon={
-                    showAcademicYearCollapse ? faChevronRight : faChevronDown
-                  }
-                  className="ms-1 small"
-                />
-              </button>
-              <div
-                className={`collapse${showAcademicYearCollapse ? " show" : ""
-                  } mb-3`}
-                id="academicYearCollapse"
-              >
-                {Array.from(
-                  new Set(
-                    studentData.map((student) =>
-                      getAcademicYear(student.studentId)
-                    )
-                  )
-                ).sort().map((academicYear, index) => (
-                  <div key={index}>
-                    <input
-                      type="checkbox"
-                      className="form-check-input me-2"
-                      id={academicYear}
-                      value={academicYear}
-                      checked={filters.academicYear.includes(academicYear)}
-                      onChange={() =>
-                        handleFilterChange("academicYear", academicYear)
-                      }
-                    />
-                    <label htmlFor={academicYear} className="small-font">{academicYear}</label>
-                  </div>
-                ))}
-              </div>
-            </div> */}
           </div>
         </div>
         <div className="row">

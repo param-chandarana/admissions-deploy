@@ -1,5 +1,5 @@
 // import { Student } from "../models/student.model.js";
-// import * as XLXS from "xlsx";
+// import * as XLSX from "xlsx";
 
 const Student = require("../models/student.model");
 const XLSX = require("xlsx");
@@ -13,53 +13,6 @@ const getAllStudents = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
-// // Get filtered students with pagination
-// const getPaginatedStudents = async (req, res) => {
-//   const PAGE_SIZE = 10;
-//   const page = parseInt(req.query.page || "0");
-
-//   const filterQuery = {};
-//   if (req.query.countryName) {
-//     filterQuery.countryName = { $in: req.query.countryName.split(",") };
-//   }you
-//   if (req.query.qualification) {
-//     // Decode the query parameter to handle URL-encoded values
-//     const qualifications = decodeURIComponent(req.query.qualification).split(
-//       ","
-//     );
-//     filterQuery.qualification = { $in: qualifications };
-//   }
-//   if (req.query.courseOfStudy) {
-//     filterQuery.courseOfStudy = { $in: req.query.courseOfStudy.split(",") };
-//   }
-//   if (req.query.duration) {
-//     filterQuery.duration = { $in: req.query.duration.split(",") };
-//   }
-//   // if (req.query.academicYear) {
-//   //   const academicYearPattern = new RegExp("\\b" + `${req.query.academicYear}` + "\\b");
-//   //   filterQuery.studentId = { $regex: academicYearPattern };
-//   // }
-//   if (req.query.search) {
-//     filterQuery.studentName = { $regex: new RegExp(req.query.search, "i") };
-//   }
-
-//   try {
-//     const total = await Student.countDocuments({});
-//     const filtered = await Student.countDocuments(filterQuery);
-//     const students = await Student.find(filterQuery)
-//       .limit(PAGE_SIZE)
-//       .skip(PAGE_SIZE * page);
-//     res.status(200).json({
-//       totalStudents: total,
-//       filteredStudents: filtered,
-//       totalPages: Math.ceil(filtered / PAGE_SIZE),
-//       students,
-//     });
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
 
 // Get filtered and sorted students with pagination
 const getPaginatedStudents = async (req, res) => {
