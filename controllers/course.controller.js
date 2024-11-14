@@ -8,16 +8,18 @@ const getAllCourses = async (req, res) => {
     const courses = await Course.find({});
     res.status(200).json(courses);
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    res.status(500).json({ message: error.message });
   }
-}
+};
 
-// Get filtered courses with pagination
+// Get filtered and sorted courses with pagination
 const getPaginatedCourses = async (req, res) => {
   const PAGE_SIZE = 10;
   const page = parseInt(req.query.page || "0");
 
-  // Construct filter query
+  const sortField = req.query.sortField || "courseName";
+  const sortOrder = req.query.sortOrder === "desc" ? -1 : 1;
+
   const filterQuery = {};
   if (req.query.qualification) {
     filterQuery.qualification = { $in: req.query.qualification.split(",") };
@@ -26,15 +28,18 @@ const getPaginatedCourses = async (req, res) => {
     filterQuery.duration = { $in: req.query.duration.split(",") };
   }
   if (req.query.search) {
-    filterQuery.courseName = { $regex: new RegExp(req.query.search, 'i') };
+    filterQuery.courseName = { $regex: new RegExp(req.query.search, "i") };
   }
 
   try {
     const total = await Course.countDocuments({});
     const filtered = await Course.countDocuments(filterQuery);
+
     const courses = await Course.find(filterQuery)
+      .sort({ [sortField]: sortOrder })
       .limit(PAGE_SIZE)
       .skip(PAGE_SIZE * page);
+
     res.status(200).json({
       totalCourses: total,
       filteredCourses: filtered,

@@ -31,47 +31,93 @@ const CourseDetails = () => {
   const [showDurationCollapse, setShowDurationCollapse] = useState(false);
   const [pageNumber, setPageNumber] = useState(0);
   const [numberOfPages, setNumberOfPages] = useState(0);
-  const [sortColumn, setSortColumn] = useState(null);
-  const [sortDirection, setSortDirection] = useState("asc");
+  const [sortField, setSortField] = useState("courseName"); // Default sort field courseName
+  const [sortOrder, setSortOrder] = useState("asc"); // Default sort order ascending
   const [isLoading, setIsLoading] = useState(false);
 
-  const initialFetchRef = useRef(false);
+  const initialFetchRef = useRef({
+    courses: true,
+  });
+
+  const handleSort = (field) => {
+    if (sortField === field) {
+      setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
+    } else {
+      setSortField(field);
+      setSortOrder("asc");
+    }
+  };
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     setIsLoading(true);
+  //     try {
+  //       const filterParams = {
+  //         page: pageNumber,
+  //         qualification: filters.qualification.join(","),
+  //         duration: filters.duration.join(","),
+  //         search: searchQuery,
+  //       };
+
+  //       const response = await axios.get(
+  //         `/api/courses/get?page=${pageNumber}`,
+  //         {
+  //           params: filterParams,
+  //         }
+  //       );
+  //       setTotalCount(response.data.totalCourses);
+  //       setFilteredCount(response.data.filteredCourses);
+  //       setCourseData(response.data.courses);
+  //       setNumberOfPages(response.data.totalPages);
+  //     } catch (error) {
+  //       toast.error("Error fetching courses");
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
+
+  //   if (!initialFetchRef.current) {
+  //     initialFetchRef.current = true;
+  //     fetchData();
+  //   } else {
+  //     fetchData();
+  //   }
+  // }, [pageNumber, filters, searchQuery]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        const filterParams = {
-          page: pageNumber,
-          qualification: filters.qualification.join(","),
-          duration: filters.duration.join(","),
-          search: searchQuery,
-        };
+    if (initialFetchRef.current.courses) {
+      initialFetchRef.current.courses = false;
+      const fetchData = async () => {
+        setIsLoading(true);
+        try {
+          const filterParams = {
+            page: pageNumber,
+            qualification: filters.qualification.join(","),
+            duration: filters.duration.join(","),
+            search: searchQuery,
+            sortField: sortField || "courseName",
+            sortOrder: sortOrder || "asc",
+          };
 
-        const response = await axios.get(
-          `/api/courses/get?page=${pageNumber}`,
-          {
+          const response = await axios.get(`/api/courses/get`, {
             params: filterParams,
-          }
-        );
-        setTotalCount(response.data.totalCourses);
-        setFilteredCount(response.data.filteredCourses);
-        setCourseData(response.data.courses);
-        setNumberOfPages(response.data.totalPages);
-      } catch (error) {
-        toast.error("Error fetching courses");
-      } finally {
-        setIsLoading(false);
-      }
-    };
+          });
 
-    if (!initialFetchRef.current) {
-      initialFetchRef.current = true;
-      fetchData();
-    } else {
+          setCourseData(response.data.courses);
+          setTotalCount(response.data.totalCourses);
+          setFilteredCount(response.data.filteredCourses);
+          setNumberOfPages(response.data.totalPages);
+          initialFetchRef.current.courses = true;
+        } catch (error) {
+          toast.error("Error fetching courses");
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
       fetchData();
     }
-  }, [pageNumber, filters, searchQuery]);
+  }, [pageNumber, filters, searchQuery, sortField, sortOrder]);
 
   useEffect(() => {
     const fetchFilterData = async () => {
@@ -134,30 +180,30 @@ const CourseDetails = () => {
     }
   };
 
-  const handleSort = (column) => {
-    if (sortColumn === column) {
-      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
-    } else {
-      setSortColumn(column);
-      setSortDirection("asc");
-    }
-  };
+  // const handleSort = (column) => {
+  //   if (sortField === column) {
+  //     setsortOrder(sortOrder === "asc" ? "desc" : "asc");
+  //   } else {
+  //     setsortField(column);
+  //     setsortOrder("asc");
+  //   }
+  // };
 
-  const sortedCourses = [...courseData].sort((a, b) => {
-    const columnA = sortColumn ? a[sortColumn] : null;
-    const columnB = sortColumn ? b[sortColumn] : null;
+  // const sortedCourses = [...courseData].sort((a, b) => {
+  //   const columnA = sortField ? a[sortField] : null;
+  //   const columnB = sortField ? b[sortField] : null;
 
-    if (typeof columnA === "string" && typeof columnB === "string") {
-      const comparison = columnA.localeCompare(columnB);
-      return sortDirection === "asc" ? comparison : -comparison;
-    } else {
-      // Fallback to basic comparison if not strings
-      const comparison = columnA > columnB ? 1 : columnA < columnB ? -1 : 0;
-      return sortDirection === "asc" ? comparison : -comparison;
-    }
-  });
+  //   if (typeof columnA === "string" && typeof columnB === "string") {
+  //     const comparison = columnA.localeCompare(columnB);
+  //     return sortOrder === "asc" ? comparison : -comparison;
+  //   } else {
+  //     // Fallback to basic comparison if not strings
+  //     const comparison = columnA > columnB ? 1 : columnA < columnB ? -1 : 0;
+  //     return sortOrder === "asc" ? comparison : -comparison;
+  //   }
+  // });
 
-  const visibleCount = sortedCourses.length;
+  const visibleCount = courseData.length;
 
   useEffect(() => {
     if (visibleCount === 0 && filteredCount !== 0) {
@@ -308,9 +354,9 @@ const CourseDetails = () => {
                   <tr>
                     <th onClick={() => handleSort("courseName")}>
                       Course Name{" "}
-                      {sortColumn === "courseName" ? (
+                      {sortField === "courseName" ? (
                         <FontAwesomeIcon
-                          icon={sortDirection === "asc" ? faSortUp : faSortDown}
+                          icon={sortOrder === "asc" ? faSortUp : faSortDown}
                           className="ms-1 small"
                         />
                       ) : (
@@ -319,9 +365,9 @@ const CourseDetails = () => {
                     </th>
                     <th onClick={() => handleSort("qualification")}>
                       Qualification{" "}
-                      {sortColumn === "qualification" ? (
+                      {sortField === "qualification" ? (
                         <FontAwesomeIcon
-                          icon={sortDirection === "asc" ? faSortUp : faSortDown}
+                          icon={sortOrder === "asc" ? faSortUp : faSortDown}
                           className="ms-1 small"
                         />
                       ) : (
@@ -334,9 +380,9 @@ const CourseDetails = () => {
                       title="Sort"
                     >
                       Duration (in Years){" "}
-                      {sortColumn === "duration" ? (
+                      {sortField === "duration" ? (
                         <FontAwesomeIcon
-                          icon={sortDirection === "asc" ? faSortUp : faSortDown}
+                          icon={sortOrder === "asc" ? faSortUp : faSortDown}
                           className="ms-1 small"
                         />
                       ) : (
@@ -345,9 +391,9 @@ const CourseDetails = () => {
                     </th>
                     <th onClick={() => handleSort("totalAnnualTuitionFee")}>
                       Total Annual Tuition Fee{" "}
-                      {sortColumn === "totalAnnualTuitionFee" ? (
+                      {sortField === "totalAnnualTuitionFee" ? (
                         <FontAwesomeIcon
-                          icon={sortDirection === "asc" ? faSortUp : faSortDown}
+                          icon={sortOrder === "asc" ? faSortUp : faSortDown}
                           className="ms-1 small"
                         />
                       ) : (
@@ -356,9 +402,9 @@ const CourseDetails = () => {
                     </th>
                     <th onClick={() => handleSort("hostelMessAndOtherFees")}>
                       Hostel, Mess and Other Fees{" "}
-                      {sortColumn === "hostelMessAndOtherFees" ? (
+                      {sortField === "hostelMessAndOtherFees" ? (
                         <FontAwesomeIcon
-                          icon={sortDirection === "asc" ? faSortUp : faSortDown}
+                          icon={sortOrder === "asc" ? faSortUp : faSortDown}
                           className="ms-1 small"
                         />
                       ) : (
@@ -367,9 +413,9 @@ const CourseDetails = () => {
                     </th>
                     <th onClick={() => handleSort("totalAnnualFees")}>
                       Total Annual Fees{" "}
-                      {sortColumn === "totalAnnualFees" ? (
+                      {sortField === "totalAnnualFees" ? (
                         <FontAwesomeIcon
-                          icon={sortDirection === "asc" ? faSortUp : faSortDown}
+                          icon={sortOrder === "asc" ? faSortUp : faSortDown}
                           className="ms-1 small"
                         />
                       ) : (
@@ -382,9 +428,9 @@ const CourseDetails = () => {
                       }
                     >
                       Special Scholarship from Institute{" "}
-                      {sortColumn === "specialScholarshipFromInstitute" ? (
+                      {sortField === "specialScholarshipFromInstitute" ? (
                         <FontAwesomeIcon
-                          icon={sortDirection === "asc" ? faSortUp : faSortDown}
+                          icon={sortOrder === "asc" ? faSortUp : faSortDown}
                           className="ms-1 small"
                         />
                       ) : (
@@ -397,9 +443,9 @@ const CourseDetails = () => {
                       }
                     >
                       MU President's Special Scholarship{" "}
-                      {sortColumn === "MUPresidentsSpecialScholarship" ? (
+                      {sortField === "MUPresidentsSpecialScholarship" ? (
                         <FontAwesomeIcon
-                          icon={sortDirection === "asc" ? faSortUp : faSortDown}
+                          icon={sortOrder === "asc" ? faSortUp : faSortDown}
                           className="ms-1 small"
                         />
                       ) : (
@@ -408,9 +454,9 @@ const CourseDetails = () => {
                     </th>
                     <th onClick={() => handleSort("netAnnualFeePayable")}>
                       Net Annual Fee Payable{" "}
-                      {sortColumn === "netAnnualFeePayable" ? (
+                      {sortField === "netAnnualFeePayable" ? (
                         <FontAwesomeIcon
-                          icon={sortDirection === "asc" ? faSortUp : faSortDown}
+                          icon={sortOrder === "asc" ? faSortUp : faSortDown}
                           className="ms-1 small"
                         />
                       ) : (
@@ -430,8 +476,8 @@ const CourseDetails = () => {
                   </tbody>
                 ) : (
                   <tbody>
-                    {sortedCourses.length > 0 ? (
-                      sortedCourses.map((course, index) => (
+                    {courseData.length > 0 ? (
+                      courseData.map((course, index) => (
                         <tr key={index}>
                           <td>{course.courseName}</td>
                           <td>{course.qualification}</td>

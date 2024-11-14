@@ -19,7 +19,6 @@ const getPaginatedStudents = async (req, res) => {
   const PAGE_SIZE = 10;
   const page = parseInt(req.query.page || "0");
 
-  // Default sort field and order
   const sortField = req.query.sortField || "studentId";
   const sortOrder = req.query.sortOrder === "desc" ? -1 : 1;
 
@@ -47,7 +46,6 @@ const getPaginatedStudents = async (req, res) => {
     const total = await Student.countDocuments({});
     const filtered = await Student.countDocuments(filterQuery);
 
-    // Apply sorting by the sortField and sortOrder before pagination
     const students = await Student.find(filterQuery)
       .sort({ [sortField]: sortOrder })
       .limit(PAGE_SIZE)
