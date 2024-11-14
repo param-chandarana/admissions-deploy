@@ -48,42 +48,6 @@ const CourseDetails = () => {
     }
   };
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     setIsLoading(true);
-  //     try {
-  //       const filterParams = {
-  //         page: pageNumber,
-  //         qualification: filters.qualification.join(","),
-  //         duration: filters.duration.join(","),
-  //         search: searchQuery,
-  //       };
-
-  //       const response = await axios.get(
-  //         `/api/courses/get?page=${pageNumber}`,
-  //         {
-  //           params: filterParams,
-  //         }
-  //       );
-  //       setTotalCount(response.data.totalCourses);
-  //       setFilteredCount(response.data.filteredCourses);
-  //       setCourseData(response.data.courses);
-  //       setNumberOfPages(response.data.totalPages);
-  //     } catch (error) {
-  //       toast.error("Error fetching courses");
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   };
-
-  //   if (!initialFetchRef.current) {
-  //     initialFetchRef.current = true;
-  //     fetchData();
-  //   } else {
-  //     fetchData();
-  //   }
-  // }, [pageNumber, filters, searchQuery]);
-
   useEffect(() => {
     if (initialFetchRef.current.courses) {
       initialFetchRef.current.courses = false;
@@ -179,29 +143,6 @@ const CourseDetails = () => {
       setPageNumber(0);
     }
   };
-
-  // const handleSort = (column) => {
-  //   if (sortField === column) {
-  //     setsortOrder(sortOrder === "asc" ? "desc" : "asc");
-  //   } else {
-  //     setsortField(column);
-  //     setsortOrder("asc");
-  //   }
-  // };
-
-  // const sortedCourses = [...courseData].sort((a, b) => {
-  //   const columnA = sortField ? a[sortField] : null;
-  //   const columnB = sortField ? b[sortField] : null;
-
-  //   if (typeof columnA === "string" && typeof columnB === "string") {
-  //     const comparison = columnA.localeCompare(columnB);
-  //     return sortOrder === "asc" ? comparison : -comparison;
-  //   } else {
-  //     // Fallback to basic comparison if not strings
-  //     const comparison = columnA > columnB ? 1 : columnA < columnB ? -1 : 0;
-  //     return sortOrder === "asc" ? comparison : -comparison;
-  //   }
-  // });
 
   const visibleCount = courseData.length;
 
