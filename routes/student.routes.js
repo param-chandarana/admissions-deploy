@@ -20,7 +20,8 @@ const {
   updateStudentById,
   deleteStudentById,
   getHighestStudentId,
-  downloadExcel
+  downloadExcel,
+  checkHasRecords,
 } = require("../controllers/student.controller");
 const { protect } = require("../middleware/authMiddleware");
 
@@ -35,7 +36,8 @@ router.post("/add", createStudent);
 router.put("/update/:id", updateStudentById);
 router.delete("/delete/:id", deleteStudentById);
 router.get("/get-highest-id", getHighestStudentId);
-router.get('/download-excel', downloadExcel);
+router.get("/download-excel", downloadExcel);
+router.get("/check-has-records", checkHasRecords);
 
 // export default router;
 

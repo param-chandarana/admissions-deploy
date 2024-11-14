@@ -182,14 +182,6 @@ option:hover {
   background-color: #b41e1e !important;
 }
 
-.btn-delete:active {
-  background-color: #a81a1a !important;
-}
-
-.btn-delete:disabled {
-  background-color: #e22 !important;
-}
-
 .btn-edit, .btn-offer-letter {
   color: #00a6bd !important;
   background: none !important;

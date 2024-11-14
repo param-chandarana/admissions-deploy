@@ -209,6 +209,17 @@ const downloadExcel = async (req, res) => {
   }
 };
 
+// Check if there are any student records in the database
+const checkHasRecords = async (req, res) => {
+  try {
+    const studentCount = await Student.countDocuments();
+    const hasRecords = studentCount > 0;
+    res.status(200).json(hasRecords);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   getAllStudents,
   getPaginatedStudents,
@@ -218,4 +229,5 @@ module.exports = {
   deleteStudentById,
   getHighestStudentId,
   downloadExcel,
+  checkHasRecords,
 };

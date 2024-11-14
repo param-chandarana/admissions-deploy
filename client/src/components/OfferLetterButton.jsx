@@ -16,11 +16,12 @@ const OfferLetterButton = ({ studentData }) => {
       document={<OfferLetterPDF studentData={studentData} />}
       fileName={`${fileName}.pdf`}
       style={{ textDecoration: "none" }}
+      data-bs-toggle="tooltip"
+      title="Generate Offer Letter"
     >
       {({ blob, url, loading, error }) => (
         <button
           className="btn btn-offer-letter px-1"
-          data-bs-toggle="tooltip"
           onClick={() => {
             if (loading) {
               toast.info("Generating offer letter...");

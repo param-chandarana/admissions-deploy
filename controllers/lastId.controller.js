@@ -7,7 +7,7 @@ const getLastId = async (req, res) => {
   try {
     let lastId = await LastId.findOne();
     if (!lastId) {
-      lastId = { lastStudentId: "INT/INT-KV/2023-24/000" }; // default ID format
+      lastId = { lastStudentId: "INT/INT-KV/2024-25/000" }; // default ID format
     }
     res.status(200).json(lastId);
   } catch (error) {
@@ -29,7 +29,6 @@ const updateLastId = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
 
 module.exports = {
   getLastId,

@@ -85,7 +85,9 @@ const StudentForm = ({ isEditMode }) => {
               ...new Set(courses.map((course) => course.qualification)),
             ]);
             setCorrespondingCourses(
-              courses.filter((course) => course.qualification === studentData.qualification)
+              courses.filter(
+                (course) => course.qualification === studentData.qualification
+              )
             );
           } catch (error) {
             toast.error("Error fetching student");
@@ -112,7 +114,9 @@ const StudentForm = ({ isEditMode }) => {
   useEffect(() => {
     if (studentData.qualification !== "") {
       setCorrespondingCourses(
-        courses.filter((course) => course.qualification === studentData.qualification)
+        courses.filter(
+          (course) => course.qualification === studentData.qualification
+        )
       );
     }
   }, [studentData.qualification, courses]);
@@ -207,6 +211,34 @@ const StudentForm = ({ isEditMode }) => {
     }
   };
 
+  const handleResetId = async () => {
+    try {
+      const response = await axios.get(`/api/students/check-has-records`);
+      const hasRecords = response.data;
+
+      if (!hasRecords) {
+        const currentYear = new Date().getFullYear();
+        const nextYearShort = (currentYear + 1) % 100;
+        const currentAcademicYear = `${currentYear}-${nextYearShort
+          .toString()
+          .padStart(2, "0")}`;
+
+        const resetId = `INT/INT-KV/${currentAcademicYear}/001`;
+        setStudentData((prev) => ({
+          ...prev,
+          studentId: resetId,
+        }));
+        setnewId(resetId);
+
+        toast.success("Student ID has been reset to 001");
+      } else {
+        toast.info("There are existing student records");
+      }
+    } catch (error) {
+      toast.error("Error checking academic year records");
+    }
+  };
+
   const getUniqueQualifications = () => {
     setUniqueQualifications([
       ...new Set(courses.map((course) => course.qualification)),
@@ -214,7 +246,7 @@ const StudentForm = ({ isEditMode }) => {
   };
 
   const handleGenerateOfferLetter = async () => {
-    const trimmedStudentData = trimValues(studentData)
+    const trimmedStudentData = trimValues(studentData);
     try {
       // Extract last three characters of studentId
       const studentId = studentData.studentId;
@@ -223,9 +255,13 @@ const StudentForm = ({ isEditMode }) => {
         .replace(/^0+/, ""); // Remove leading zeroes
 
       // Send request to server to generate offer letter
-      const response = await axios.post(`/api/pdf/generate`, trimmedStudentData, {
-        responseType: "blob", // Receive response as a Blob
-      });
+      const response = await axios.post(
+        `/api/pdf/generate`,
+        trimmedStudentData,
+        {
+          responseType: "blob", // Receive response as a Blob
+        }
+      );
 
       // Create a blob URL for the PDF
       const pdfBlob = new Blob([response.data], { type: "application/pdf" });
@@ -245,7 +281,7 @@ const StudentForm = ({ isEditMode }) => {
 
   const trimValues = (data) => {
     return Object.keys(data).reduce((acc, key) => {
-      acc[key] = typeof data[key] === 'string' ? data[key].trim() : data[key];
+      acc[key] = typeof data[key] === "string" ? data[key].trim() : data[key];
       return acc;
     }, {});
   };
@@ -254,15 +290,23 @@ const StudentForm = ({ isEditMode }) => {
     e.preventDefault();
     const trimmedStudentData = trimValues(studentData);
     if (isEditMode) {
-      if (JSON.stringify(trimmedStudentData) === JSON.stringify(initialStudentData)) {
+      if (
+        JSON.stringify(trimmedStudentData) ===
+        JSON.stringify(initialStudentData)
+      ) {
         toast.info("Nothing to update");
         return;
       }
       try {
-        await axios.put(`/api/students/update/${studentId}`, trimmedStudentData);
+        await axios.put(
+          `/api/students/update/${studentId}`,
+          trimmedStudentData
+        );
         setInitialStudentData(trimmedStudentData);
         handleGenerateOfferLetter();
-        toast.success("Student updated and offer letter generated successfully");
+        toast.success(
+          "Student updated and offer letter generated successfully"
+        );
       } catch (error) {
         toast.error("Error updating student");
       }
@@ -306,6 +350,13 @@ const StudentForm = ({ isEditMode }) => {
     <div className="container mt-4">
       <ToastContainer />
       <h1 className="h2 mb-4">{isEditMode ? "Edit" : "Add"} Student</h1>
+      {!isEditMode && (
+        <div className="mb-4">
+          <button type="button" className="btn" onClick={handleResetId}>
+            Reset ID
+          </button>
+        </div>
+      )}
       <form onSubmit={handleSubmit}>
         <div className="card p-4 mb-md-4 mb-3">
           <h2 className="h5 mb-3">Personal Information</h2>
@@ -397,11 +448,13 @@ const StudentForm = ({ isEditMode }) => {
                 required
               >
                 <option value="">Select a course</option>
-                {correspondingCourses.sort((a, b) => a.courseName.localeCompare(b.courseName)).map((course) => (
-                  <option key={course.courseName} value={course.courseName}>
-                    {course.courseName}
-                  </option>
-                ))}
+                {correspondingCourses
+                  .sort((a, b) => a.courseName.localeCompare(b.courseName))
+                  .map((course) => (
+                    <option key={course.courseName} value={course.courseName}>
+                      {course.courseName}
+                    </option>
+                  ))}
               </select>
             </div>
             <div className="col-md-4 mb-3">
