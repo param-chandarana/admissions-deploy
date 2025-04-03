@@ -34,12 +34,14 @@ const studentRouter = require("./routes/student.routes");
 const userRouter = require("./routes/user.routes");
 const pdfRouter = require("./routes/pdf.routes");
 const lastIdRouter = require("./routes/lastId.routes");
+const settingsRouter = require("./routes/settings.routes");
 
 app.use("/api/courses", courseRouter);
 app.use("/api/students", studentRouter);
 app.use("/api/users", userRouter);
 app.use("/api/pdf", pdfRouter);
 app.use("/api/last-id", lastIdRouter);
+app.use("/api/settings", settingsRouter);
 
 // app.get("/", (req, res) => {
 //   res.send("Server is ready");

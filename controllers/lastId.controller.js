@@ -5,13 +5,10 @@ const LastId = require("../models/lastId.model");
 // Get last ID
 const getLastId = async (req, res) => {
   try {
-    let lastId = await LastId.findOne();
-    if (!lastId) {
-      lastId = { lastStudentId: "INT/INT-KV/2024-25/000" }; // default ID format
-    }
-    res.status(200).json(lastId);
+    const lastIdRecord = await LastId.findOne();
+    res.json({ lastStudentId: lastIdRecord?.lastStudentId || null });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: "Error fetching last student ID" });
   }
 };
 
@@ -19,14 +16,18 @@ const getLastId = async (req, res) => {
 const updateLastId = async (req, res) => {
   try {
     const { lastStudentId } = req.body;
-    const lastId = await LastId.findOneAndUpdate(
-      {},
-      { lastStudentId },
-      { new: true, upsert: true }
-    );
-    res.status(200).json(lastId);
+    let lastIdRecord = await LastId.findOne();
+
+    if (!lastIdRecord) {
+      lastIdRecord = new LastId({ lastStudentId });
+    } else {
+      lastIdRecord.lastStudentId = lastStudentId;
+    }
+
+    await lastIdRecord.save();
+    res.json({ message: "Last student ID updated successfully" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: "Error updating last student ID" });
   }
 };
 

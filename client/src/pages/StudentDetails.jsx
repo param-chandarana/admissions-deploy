@@ -192,7 +192,6 @@ const StudentDetails = () => {
 
   const handleDownload = () => {
     const filterParams = {
-      page: pageNumber,
       countryName: filters.countryName.join(","),
       qualification: filters.qualification.join(","),
       courseOfStudy: filters.courseOfStudy.join(","),
@@ -207,25 +206,19 @@ const StudentDetails = () => {
       return;
     }
 
-    axios({
-      url: "/api/students/download-excel",
-      method: "GET",
-      params: filterParams,
-      responseType: "blob",
-    })
-      .then((response) => {
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", "Students.xlsx");
-        document.body.appendChild(link);
-        link.click();
-        toast.success("File downloaded successfully");
-      })
-      .catch((error) => {
-        toast.error("Error downloading file");
-        console.error("Error downloading file:", error);
-      });
+    // Build the query string manually
+    const queryString = new URLSearchParams(filterParams).toString();
+    const downloadUrl = `/api/students/download-excel?${queryString}`;
+
+    // Create a link and click it directly
+    const link = document.createElement("a");
+    link.href = downloadUrl;
+    link.setAttribute("download", "Students.xlsx");
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    toast.success("File download initiated");
   };
 
   return (

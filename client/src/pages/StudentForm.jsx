@@ -27,6 +27,8 @@ const StudentForm = ({ isEditMode }) => {
   const [newId, setnewId] = useState("");
   const [initialStudentData, setInitialStudentData] = useState(null);
   const { studentId } = useParams();
+  const [isLoading, setIsLoading] = useState(false);
+  const [academicYear, setAcademicYear] = useState("");
 
   const initialFetchRef = useRef({
     countries: true,
@@ -104,6 +106,7 @@ const StudentForm = ({ isEditMode }) => {
   useEffect(() => {
     if (!isEditMode) {
       generateStudentId();
+      getCurrentAcademicYear();
     }
   }, [isEditMode]);
 
@@ -163,79 +166,75 @@ const StudentForm = ({ isEditMode }) => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setStudentData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    if (name === "academicYear") {
+      setAcademicYear(value); // Update academicYear state
+    } else {
+      setStudentData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   const generateStudentId = async () => {
     try {
-      const response = await axios.get(`/api/last-id/get`);
-      const { lastStudentId } = response.data;
-
-      const currentYear = new Date().getFullYear();
-      const nextYearShort = (currentYear + 1) % 100;
-      const currentAcademicYear = `${currentYear}-${nextYearShort
-        .toString()
-        .padStart(2, "0")}`;
-
-      let newStudentId;
-      if (lastStudentId) {
-        const lastAcademicYear = lastStudentId.split("/")[2]; // Assuming the academic year is the third part of the ID
-        const serialNumber = parseInt(lastStudentId.split("/").pop());
-
-        if (lastAcademicYear !== currentAcademicYear) {
-          // If the academic year has changed, start the serial number from 001
-          newStudentId = `INT/INT-KV/${currentAcademicYear}/001`;
-        } else {
-          // If the academic year is the same, increment the last serial number
-          const nextSerialNumberFormatted = (serialNumber + 1)
-            .toString()
-            .padStart(3, "0");
-          newStudentId = `INT/INT-KV/${currentAcademicYear}/${nextSerialNumberFormatted}`;
-        }
-      } else {
-        // If there's no last student ID, start from 001
-        newStudentId = `INT/INT-KV/${currentAcademicYear}/001`;
-      }
-
+      const response = await axios.get(`/api/students/generate-student-id`);
+      const newStudentId = response.data.nextStudentId; // Changed from generatedId to nextStudentId
       setnewId(newStudentId);
-      setStudentData((prev) => ({
-        ...prev,
-        studentId: newStudentId,
-      }));
+      setStudentData((prev) => ({ ...prev, studentId: newStudentId }));
     } catch (error) {
-      // console.error("Error generating student ID:", error.message);
+      console.error("Error generating student ID:", error);
       toast.error("Error generating student ID");
     }
   };
 
-  const handleResetId = async () => {
+  const handleUpdateAcademicYear = async () => {
     try {
-      const response = await axios.get(`/api/students/check-has-records`);
-      const hasRecords = response.data;
+      const academicYear = document.getElementById("academicYear").value;
+      const response = await axios.put(`/api/settings/update-academic-year`, {
+        currentAcademicYear: academicYear,
+      });
 
-      if (!hasRecords) {
-        const currentYear = new Date().getFullYear();
-        const nextYearShort = (currentYear + 1) % 100;
-        const currentAcademicYear = `${currentYear}-${nextYearShort
-          .toString()
-          .padStart(2, "0")}`;
-
-        const resetId = `INT/INT-KV/${currentAcademicYear}/001`;
-        setStudentData((prev) => ({
-          ...prev,
-          studentId: resetId,
-        }));
-        setnewId(resetId);
-
-        toast.success("Student ID has been reset to 001");
+      if (response.status === 200) {
+        setAcademicYear(academicYear);
+        toast.success("Academic year updated successfully");
       } else {
-        toast.info("There are existing student records");
+        toast.error("Error updating academic year");
       }
     } catch (error) {
-      toast.error("Error checking academic year records");
+      console.error("Error updating academic year:", error);
+
+      // Extract error message from server response if available
+      let errorMessage = "Something went wrong. Please try again.";
+
+      if (error.response) {
+        // Server responded with a status code outside 2xx
+        errorMessage =
+          error.response.data.message || `Error: ${error.response.status}`;
+      } else if (error.request) {
+        // Request was made but no response received
+        errorMessage = "No response from server. Please check your connection.";
+      } else {
+        // Something happened while setting up the request
+        errorMessage = error.message;
+      }
+
+      toast.error(errorMessage);
+    }
+  };
+
+  const getCurrentAcademicYear = async () => {
+    try {
+      const response = await axios.get(`/api/settings/current-academic-year`);
+      const currentAcademicYear = response.data.currentAcademicYear;
+      if (currentAcademicYear) {
+        setAcademicYear(currentAcademicYear);
+      } else {
+        toast.error("Error fetching current academic year");
+      }
+    } catch (error) {
+      console.error("Error fetching current academic year:", error);
+      toast.error("Error fetching current academic year");
     }
   };
 
@@ -275,7 +274,7 @@ const StudentForm = ({ isEditMode }) => {
       link.click();
       document.body.removeChild(link);
     } catch (error) {
-      // console.error("Error generating offer letter:", error);
+      console.error("Error generating offer letter:", error);
     }
   };
 
@@ -352,8 +351,24 @@ const StudentForm = ({ isEditMode }) => {
       <h1 className="h2 mb-4">{isEditMode ? "Edit" : "Add"} Student</h1>
       {!isEditMode && (
         <div className="mb-4">
-          <button type="button" className="btn" onClick={handleResetId}>
-            Reset ID
+          <label htmlFor="academicYear" className="d-block mb-1">
+            Academic Year
+          </label>
+          <input
+            type="text"
+            id="academicYear"
+            name="academicYear"
+            value={academicYear}
+            onChange={handleInputChange}
+            className="form-control mb-2"
+            required
+          />
+          <button
+            type="button"
+            className="btn"
+            onClick={handleUpdateAcademicYear}
+          >
+            Update Academic Year
           </button>
         </div>
       )}
@@ -369,7 +384,7 @@ const StudentForm = ({ isEditMode }) => {
                 type="text"
                 id="studentId"
                 name="studentId"
-                value={studentData.studentId}
+                value={isLoading ? "Loading..." : studentData.studentId}
                 className="form-control d-block"
                 onChange={handleInputChange}
                 readOnly

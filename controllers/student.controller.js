@@ -2,6 +2,8 @@
 // import * as XLSX from "xlsx";
 
 const Student = require("../models/student.model");
+const Settings = require("../models/settings.model");
+const LastId = require("../models/lastId.model");
 const XLSX = require("xlsx");
 
 // Get all students
@@ -76,10 +78,48 @@ const getStudentById = async (req, res) => {
   }
 };
 
-// Create a new student
-const createStudent = async (req, res) => {
-  const studentData = req.body;
+const generateStudentId = async (req, res) => {
   try {
+    // Fetch current academic year
+    const settings = await Settings.findOne();
+    if (!settings) {
+      return res
+        .status(500)
+        .json({ error: "Academic year settings not found" });
+    }
+
+    const currentAcademicYear = settings.currentAcademicYear;
+
+    // Get the last student ID
+    let lastIdRecord = await LastId.findOne();
+    let lastStudentId = lastIdRecord?.lastStudentId || "";
+
+    let newStudentId;
+
+    if (lastStudentId.includes(`/${currentAcademicYear}/`)) {
+      // Extract and increment the last number
+      const lastNumber = parseInt(lastStudentId.split("/").pop(), 10);
+      const nextNumber = (lastNumber + 1).toString().padStart(3, "0");
+
+      // Generate new student ID
+      newStudentId = `INT/INT-KV/${currentAcademicYear}/${nextNumber}`;
+    } else {
+      // If last ID does not match current academic year, reset the counter to 001
+      newStudentId = `INT/INT-KV/${currentAcademicYear}/001`;
+    }
+
+    res.status(200).json({ nextStudentId: newStudentId });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error generating student ID" });
+  }
+};
+
+// Create Student
+const createStudent = async (req, res) => {
+  try {
+    const studentData = req.body;
+
     const createdStudent = await Student.create(studentData);
     res.status(201).json(createdStudent);
   } catch (error) {
@@ -118,26 +158,7 @@ const deleteStudentById = async (req, res) => {
   }
 };
 
-// Get the highest student ID
-const getHighestStudentId = async (req, res) => {
-  try {
-    const highestStudent = await Student.findOne({}, { studentId: 1 })
-      .sort({ studentId: -1 })
-      .lean()
-      .exec();
-
-    if (!highestStudent) {
-      return res.status(404).json({ error: "No student found" });
-    }
-
-    res.json({ highestId: highestStudent.studentId });
-  } catch (error) {
-    console.error("Error fetching highest student ID:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-};
-
-// Function to handle the request for downloading the student data as an Excel file
+// Download the student data as an Excel file
 const downloadExcel = async (req, res) => {
   const filterQuery = {};
 
@@ -212,11 +233,11 @@ const downloadExcel = async (req, res) => {
 // Check if there are any student records in the database
 const checkHasRecords = async (req, res) => {
   try {
-    const studentCount = await Student.countDocuments();
-    const hasRecords = studentCount > 0;
-    res.status(200).json(hasRecords);
+    const { academicYear } = req.params;
+    const studentCount = await Student.countDocuments({ academicYear });
+    res.json(studentCount > 0);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: "Error checking student records" });
   }
 };
 
@@ -227,7 +248,7 @@ module.exports = {
   createStudent,
   updateStudentById,
   deleteStudentById,
-  getHighestStudentId,
   downloadExcel,
   checkHasRecords,
+  generateStudentId,
 };
