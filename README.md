@@ -66,7 +66,7 @@ JWT_SECRET=your_jwt_secret
 NODE_ENV=development/production
 ```
 
-Change your database name in the `constants.js` file.
+Add your database name in the `constants.js` file.
 
 The server will run at `http://localhost:8000`.
 
