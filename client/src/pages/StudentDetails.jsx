@@ -117,7 +117,7 @@ const StudentDetails = () => {
       const fetchCountries = async () => {
         try {
           const response = await axios.get(
-            "https://restcountries.com/v3.1/all"
+            "https://restcountries.com/v3.1/all?fields=name"
           );
           const names = response.data.map((country) => country.name.common);
           names.sort((a, b) => a.localeCompare(b));
