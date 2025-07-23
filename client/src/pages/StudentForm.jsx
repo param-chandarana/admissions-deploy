@@ -303,9 +303,7 @@ const StudentForm = ({ isEditMode }) => {
         );
         setInitialStudentData(trimmedStudentData);
         handleGenerateOfferLetter();
-        toast.success(
-          "Student updated and offer letter generated successfully"
-        );
+        toast.success("Student updated successfully");
       } catch (error) {
         toast.error("Error updating student");
       }
@@ -318,7 +316,7 @@ const StudentForm = ({ isEditMode }) => {
         });
 
         handleGenerateOfferLetter();
-        toast.success("Student added and offer letter generated successfully");
+        toast.success("Student added successfully");
         handleAddAnotherStudent();
       } catch (error) {
         console.error("Error adding student:", error);
