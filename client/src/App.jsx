@@ -10,7 +10,6 @@ import { Profile, AddUser } from "./pages/UserForm";
 import Private from "./components/Private";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
-import Footer from "./components/Footer";
 
 function App() {
   return (
@@ -23,10 +22,7 @@ function App() {
 function MainApp() {
   const location = useLocation();
   const hideNavbarPaths = ["/login"];
-  const hideFooterPaths = ["/login"];
-
   const shouldHideNavbar = hideNavbarPaths.includes(location.pathname);
-  const shouldHideFooter = hideFooterPaths.includes(location.pathname);
 
   return (
     <div>
@@ -58,7 +54,6 @@ function MainApp() {
         <Route path="/login" element={<Login />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
-      {!shouldHideFooter && <Footer />}
     </div>
   );
 }
