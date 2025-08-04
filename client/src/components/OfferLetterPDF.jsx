@@ -189,10 +189,6 @@ const styles = StyleSheet.create({
     width: "90%",
     paddingLeft: 11,
   },
-  tableCell: {
-    textAlign: "left",
-    fontSize: 9,
-  },
   firstTableCell: {
     fontFamily: "Calibri",
     textAlign: "left",

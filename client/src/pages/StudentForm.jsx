@@ -3,6 +3,8 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useParams } from "react-router-dom";
+import { pdf } from "@react-pdf/renderer";
+import OfferLetterPDF from "../components/OfferLetterPDF";
 
 const StudentForm = ({ isEditMode }) => {
   const [studentData, setStudentData] = useState({
@@ -253,18 +255,14 @@ const StudentForm = ({ isEditMode }) => {
         .substring(studentId.length - 3)
         .replace(/^0+/, ""); // Remove leading zeroes
 
-      // Send request to server to generate offer letter
-      const response = await axios.post(
-        `/api/pdf/generate`,
-        trimmedStudentData,
-        {
-          responseType: "blob", // Receive response as a Blob
-        }
-      );
+      toast.info("Generating offer letter...");
+
+      const blob = await pdf(
+        <OfferLetterPDF studentData={trimmedStudentData} />
+      ).toBlob();
 
       // Create a blob URL for the PDF
-      const pdfBlob = new Blob([response.data], { type: "application/pdf" });
-      const url = window.URL.createObjectURL(pdfBlob);
+      const url = window.URL.createObjectURL(blob);
 
       // Initiate download for the PDF with modified file name
       const link = document.createElement("a");
@@ -273,8 +271,14 @@ const StudentForm = ({ isEditMode }) => {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+
+      // Clean up the blob URL
+      window.URL.revokeObjectURL(url);
+
+      toast.success("Offer letter generated successfully");
     } catch (error) {
       console.error("Error generating offer letter:", error);
+      toast.error("Error generating offer letter");
     }
   };
 
@@ -316,7 +320,7 @@ const StudentForm = ({ isEditMode }) => {
         });
 
         handleGenerateOfferLetter();
-        toast.success("Student added successfully");
+        toast.success("Student added and offer letter generated successfully");
         handleAddAnotherStudent();
       } catch (error) {
         console.error("Error adding student:", error);

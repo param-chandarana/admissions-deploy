@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon -r dotenv/config --experimental-json-modules ./index.js",
-    "postinstall": "npx puppeteer browsers install chrome"
+    "dev": "nodemon -r dotenv/config --experimental-json-modules ./index.js"
   },
   "author": "",
   "license": "ISC",
@@ -20,7 +19,6 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.2.3",
     "path": "^0.12.7",
-    "puppeteer": "^22.15.0",
     "stream-buffers": "^3.0.3",
     "xlsx": "^0.18.5"
   },
